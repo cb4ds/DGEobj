@@ -131,17 +131,17 @@ subset.DGEobj <- function(x, ..., row, col, drop = FALSE, debug = FALSE){
     if (("row" %in% names(dot.args)) || ("col" %in% names(dot.args))) {
         # using named arguments, ignore unnamed arguments
         if ("row" %in% names(dot.args)) {
-            row <- eval(dot.args$row)
+            row <- eval(dot.args$row, parent.frame())
         }
         if ("col" %in% names(dot.args)) {
-            col <- eval(dot.args$col)
+            col <- eval(dot.args$col, parent.frame())
         }
     } else {
         if (length(dot.args) >= 2 && (dot.args[[2]] != "") && is.null(names(dot.args[[2]]))) {
-            row <- eval(dot.args[[2]])
+            row <- eval(dot.args[[2]], parent.frame())
         }
         if (length(dot.args) >= 3 && (dot.args[[3]] != "") && is.null(names(dot.args[[3]]))) {
-            col <- eval(dot.args[[3]])
+            col <- eval(dot.args[[3]], parent.frame())
         }
     }
 
