@@ -700,7 +700,7 @@ There are three optional arguments to initDGEobjDef:
 
 The example below defines new types to accommodate metabolomics data.  
 
-```{r initDGEObjDef}
+```{r initDGEObjDef, eval = F}
 # simulate some data 
 nr = nrow(dgeObj)
 nc = ncol(dgeObj)
