@@ -174,7 +174,7 @@ addItem <- function(dgeObj,
 #'    log2cpm <- edgeR::cpm(dgeList, log = TRUE)
 #'
 #'    dgeObj <- addItems(dgeObj,
-#'                       itemList = list(newDgelist = dgeList, LogeCPM = log2cpm),
+#'                       itemList = list(newDgelist = dgeList, Log2CPM = log2cpm),
 #'                       itemTypes = list("assay", "assay"),
 #'                       parents = list("counts", "newDgelist")
 #'    )

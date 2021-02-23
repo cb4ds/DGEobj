@@ -103,9 +103,9 @@ inventory <- function(dgeObj, verbose = FALSE)  {
                            Col = Col,
                            DateCreated = creationDates),
                      row.names = NULL)
-    if (verbose == TRUE)
-        df$FunArgs <- unlist(FunArgs)
-
+    if (verbose == TRUE) {
+        df$FunArgs <- unlist(lapply(FunArgs, paste0, collapse = "; "))
+    }
     return(df)
 }
 

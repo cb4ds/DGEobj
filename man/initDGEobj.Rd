@@ -2,28 +2,28 @@
 % Please edit documentation in R/init.R
 \name{initDGEobj}
 \alias{initDGEobj}
-\title{Initialize with base data (counts, gene annotations, sample annotations)}
+\title{Initialize with base data (primaryAssayData, row annotations, col annotations)}
 \usage{
 initDGEobj(
-  counts,
+  primaryAssayData,
   rowData,
   colData,
   level,
   customAttr,
   allowShortSampleIDs = FALSE,
-  DGEobjDef = .DGEobjDef
+  DGEobjDef = initDGEobjDef()
 )
 }
 \arguments{
-\item{counts}{A count matrix or dataframe with row and
-colnames. Each column represents a sample.  Each row represents and asssy
-(gene).}
+\item{primaryAssayData}{A numeric matrix or dataframe with row and
+colnames. Each column represents a sample.  Each row represents and assay.
+This is typically the counts matrix in a DGE RNA-Seq experiment.}
 
 \item{rowData}{Gene, isoform or exon level annotation. Rownames
-must match the rownames in count matrix}
+must match the rownames in primaryAssayData}
 
 \item{colData}{A dataframe describing the experiment design.
-Rownames much match the colnames(counts)}
+Rownames much match the colnames(primaryAssayData)}
 
 \item{level}{One of "gene", "isoform", or "exon"}
 
@@ -35,14 +35,14 @@ If you have a legitimate need to have short sample names composed of
 numeric characters, you can set this argument to TRUE (default = FALSE)}
 
 \item{DGEobjDef}{An object definition. Defaults to the global
-DGEobj definition (.DGEobjDef) and you usually shouldn't change this unless
+DGEobj definition (initDGEobjDef()) and you usually shouldn't change this unless
 you're customizing the object for new data types.}
 }
 \value{
 A DGEobj
 }
 \description{
-Initialize with base data (counts, gene annotations, sample annotations)
+Initialize with base data (primaryAssayData, row annotations, col annotations)
 }
 \examples{
 
@@ -51,7 +51,7 @@ Initialize with base data (counts, gene annotations, sample annotations)
    geneinfo <- dgeObj$geneData
    sampinfo <- dgeObj$design
 
-  myDgeObj <- initDGEobj(counts = MyCounts,
+  myDgeObj <- initDGEobj(primaryAssayData = MyCounts,
                          rowData = geneinfo,
                          colData = sampinfo,
                          level = "gene",

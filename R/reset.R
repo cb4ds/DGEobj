@@ -48,7 +48,7 @@ resetDGEobj <- function(dgeObj){
     }
 
     if (tolower(platformType) %in% platform.types) {
-        newObj <- initDGEobj(counts    = counts,
+        newObj <- initDGEobj(primaryAssayData = counts,
                              rowData   = rowData,
                              colData   = design,
                              level     = attr(dgeObj, "level"),

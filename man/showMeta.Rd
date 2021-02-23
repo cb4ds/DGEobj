@@ -2,7 +2,7 @@
 % Please edit documentation in R/attributes.R
 \name{showMeta}
 \alias{showMeta}
-\title{Retrieve the Key/Value metadata attributes}
+\title{Retrieve the Key/Value metadata attributes that have a character value and length of 1}
 \usage{
 showMeta(dgeObj)
 }
@@ -13,7 +13,7 @@ showMeta(dgeObj)
 A data.frame with "Attribute" and "Value" columns
 }
 \description{
-Retrieve the Key/Value metadata attributes
+Retrieve the Key/Value metadata attributes that have a character value and length of 1
 }
 \examples{
     # example DGEobj
