@@ -156,12 +156,7 @@ initDGEobj <- function(primaryAssayData,
 
     # rowData
     level <- tolower(level)
-    # switch(level,
-    #        "gene" = itemName <- "geneData",
-    #        "isoform" = itemName <- "isoformData",
-    #        "exon" = itemName <- "exonData"
-    # )
-    itemName <- paste(level, "Data", sep="")
+    itemName <- paste(level, "Data", sep = "")
 
     itemType <- itemName
     parent <- paste(itemName, "_orig", sep = "")

@@ -641,7 +641,7 @@ MyDgeObj <- rmItem(dgeObj, "granges")
 
 To add or update a single attribute, use the base R`attr` function:  
 
-```{assignAttribute}
+```{r assignAttribute}
 attr(dgeObj, "Tissue")  <- "Liver"
 ```
 
@@ -673,9 +673,9 @@ User supplied meta data in the form of key/value pairs are attached to the DGEob
 
 ## Workflow attributes  
 
-Several attributes are used to capture information about each data item ("type", "basetype", "dateCreated" and "funArgs."), as well as relationships between them ("parent"). The `inventory` function provides a convenient table view of these attributes. Operationally, the value of each of these attributes is a named list where the names are the item names and the value is the value for that item. For example, to query just the basetype of the "design" itemName:  
+Several attributes are used to capture information about each data item ("type", "basetype", "dateCreated" and "funArgs."), as well as relationships between them ("parent"). The `inventory` function provides a convenient table view of these attributes. Operationally, the value of each of these attributes is a named list where the names are the item names and the value is the value for that item. For example, to query just the basetype attribute of the "design" itemName:  
 
-``` {r getBasetypeDesign}
+``` {r workflowAttributes}
 attr(dgeObj, "basetype")[["design"]]
 ```
 
@@ -700,7 +700,7 @@ There are three optional arguments to initDGEobjDef:
 
 The example below defines new types to accommodate metabolomics data.  
 
-```{r, eval = F}
+```{r initDGEObjDef}
 # simulate some data 
 nr = nrow(dgeObj)
 nc = ncol(dgeObj)
