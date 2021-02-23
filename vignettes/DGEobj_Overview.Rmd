@@ -33,9 +33,11 @@ suppressPackageStartupMessages({
     library(conflicted)
 })
 
-conflict_prefer("select",   "dplyr",   quiet = TRUE) 
-conflict_prefer("collapse", "glue",    quiet = TRUE) 
-conflict_prefer("Position", "ggplot2", quiet = TRUE) 
+conflict_prefer("select",    "dplyr",   quiet = TRUE) 
+conflict_prefer("filter",    "dplyr",   quiet = TRUE)
+conflict_prefer("left_join", "dplyr",   quiet = TRUE)
+conflict_prefer("collapse",  "glue",    quiet = TRUE) 
+conflict_prefer("Position",  "ggplot2", quiet = TRUE) 
 
 annotation_text <- '
 # general project metadata
