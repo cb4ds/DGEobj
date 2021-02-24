@@ -700,13 +700,15 @@ There are three optional arguments to initDGEobjDef:
 
 The example below defines new types to accommodate metabolomics data.  
 
-```{r initDGEObjDef, eval = F}
+```{r initDGEObjDef}
 # simulate some data 
-nr = nrow(dgeObj)
-nc = ncol(dgeObj)
+nr <- nrow(dgeObj)
+nc <- ncol(dgeObj)
+
 myMolecules <- dgeObj$geneData
-design <- dgeObj$design
-myMSquant <- rnorm(nr * nc) %>%
+design      <- dgeObj$design
+
+myMSquant   <- rnorm(nr * nc) %>%
   exp() %>%
   matrix(nrow = nr, ncol = nc) %>%
   `rownames<-`(rownames(dgeObj)) %>%
@@ -716,10 +718,10 @@ myDGEobjDef <- initDGEobjDef(levels = c(metabolite = "intensity"),
                              types = c(normInt = "assay"))
 
 MetabolomicObj <- initDGEobj(primaryAssayData = myMSquant,
-                                 rowData = myMolecules,
-                                 colData = design,
-                                 level = "metabolite",
-                                 DGEobjDef = myDGEobjDef)
+                             rowData = myMolecules,
+                             colData = design,
+                             level = "metabolite",
+                             DGEobjDef = myDGEobjDef)
 kable(inventory(MetabolomicObj))
 ```
 
