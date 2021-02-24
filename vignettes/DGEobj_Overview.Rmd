@@ -230,7 +230,7 @@ ens.ds      <- "rnorvegicus_gene_ensembl"
 ens.mart    <- useMart(biomart = "ensembl", dataset = ens.ds)
 ens.columns <- c("ensembl_gene_id", "rgd_symbol", "chromosome_name", "start_position",
                  "end_position", "strand", "gene_biotype", "description")
-ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart) %>%
+ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart, useCache = F) %>%
     distinct(ensembl_gene_id, .keep_all = T)
 
 # Filter the list to the genes used in the test dataset and properly format gene
@@ -724,7 +724,6 @@ MetabolomicObj <- initDGEobj(primaryAssayData = myMSquant,
                              DGEobjDef = myDGEobjDef)
 kable(inventory(MetabolomicObj))
 ```
-
 
 There are simple dimension-based criteria to determine the basetype of a
 new datatype.
