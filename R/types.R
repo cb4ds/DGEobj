@@ -15,7 +15,6 @@
 #'
 #' @export
 baseType <- function(dgeObj, type){
-
     assertthat::assert_that(!missing(dgeObj),
                             !missing(type),
                             msg = "Specify both a DGEobj and a type (to check the baseType). Both are required.")
@@ -25,6 +24,10 @@ baseType <- function(dgeObj, type){
                             msg = "The type must be of class 'character'.")
 
     objDef <- attr(dgeObj, "objDef")
+
+    assertthat::assert_that(type %in% names(objDef$type),
+                            msg = "The type is not defined on the DGEobj")
+
     return(objDef$type[[type]])
 }
 
