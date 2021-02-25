@@ -714,14 +714,15 @@ myMSquant   <- rnorm(nr * nc) %>%
   `rownames<-`(rownames(dgeObj)) %>%
   `colnames<-`(colnames(dgeObj))
 
-myDGEobjDef <- initDGEobjDef(levels = c(metabolite = "intensity"),
+myDGEobjDef <- initDGEobjDef(levels            = "metabolite",
+                             primaryAssayNames = "intensity",
                              types = c(normInt = "assay"))
 
 MetabolomicObj <- initDGEobj(primaryAssayData = myMSquant,
-                             rowData = myMolecules,
-                             colData = design,
-                             level = "metabolite",
-                             DGEobjDef = myDGEobjDef)
+                             rowData          = myMolecules,
+                             colData          = design,
+                             level            = "metabolite",
+                             DGEobjDef        = myDGEobjDef)
 kable(inventory(MetabolomicObj))
 ```
 

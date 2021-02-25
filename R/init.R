@@ -212,15 +212,12 @@ initDGEobj <- function(primaryAssayData,
 
 #' Instantiate a class DGEobjDef object.
 #'
-#' @param levels               A named character vector.  Names represent new
-#'   level names.  Values represent the primaryAssay itemName for each level
-#'   (optional).  When a level is defined the itemNames and types for the
-#'   primary assay data, rowData and colData are automatically established.  The
-#'   types argument is only needed to define downstream workflow objects.
+#' @param levels               A character string or vector providing names for new levels
+#' @param primaryAssayNames    A character string or vector, must be the same length as levels
+#'   This argument supplies the primaryAssayNames for the corresponding levels.
 #' @param types                A named character vector of new types where the
-#'   values indicate the basetype of a named data type (optional)
-#' @param uniqueTypes          A name or vector of names to add to the
-#'   uniqueType list (optional)
+#'   values indicate the basetype for each named type (optional)
+#' @param uniqueTypes          A name or vector of names to add to the uniqueType list (optional)
 #'
 #' @return A class DGEobjDef object suitable for use with initDGEobj
 #'
@@ -229,39 +226,49 @@ initDGEobj <- function(primaryAssayData,
 #'     myDGEobjDef <- initDGEobjDef()
 #'
 #'     # Optionally add some new types and levels for metabolomics data
-#'      myDGEobjDef <- initDGEobjDef(
-#'          levels <- "metabolomics",
-#'          types <- c(normalizedIntensity = "assay"))
+#'      myDGEobjDef <- initDGEobjDef(levels = "metabolomics",
+#'                                   primaryAssayNames = "intensity",
+#'                                   types <- c(normalizedIntensity = "assay"))
+#'
+#'     # When a new level is defined, the itemNames and types for the
+#'     # rowData and colData are automatically established.  The
+#'     # types argument is only needed to define downstream workflow objects.
 #'
 #' @importFrom assertthat assert_that
 #'
 #' @export
-initDGEobjDef <- function(levels, types, uniqueTypes){
+initDGEobjDef <- function(levels, primaryAssayNames, types, uniqueTypes){
 
     newDef <- .DGEobjDef
 
     if (!missing(levels)) {
         assertthat::assert_that("character" %in% class(levels),
-                                msg = "levels must be a named character vector")
+                                msg = "levels must be a character string or vector")
         assertthat::assert_that(!any(levels %in% newDef$allowedLevels),
-                                msg = "Abort. Level already exists.")
+                                msg = "Abort. One or more levels already exists.")
+        assertthat::assert_that(!missing(primaryAssayNames),
+                                msg = "primaryAssayNames is required when specifying levels")
+        assertthat::assert_that(length(primaryAssayNames) == length(levels),
+                                msg = "A primaryAssayName must be specified for each level.")
+        assertthat::assert_that("character" %in% class(primaryAssayNames),
+                                msg = "primaryAssayNames must be a character string or vector")
+
         #add the new level(s)
-        levelNames <- names(levels)
-        newDef$allowedLevels <- c(newDef$allowedLevels, levelNames)
+        newDef$allowedLevels <- c(newDef$allowedLevels, levels)
 
         # Add associated types
-        primaryAssayNames <- unname(levels)
+        # primaryAssay type
         newTypes <- rep("assay", length(primaryAssayNames))
         names(newTypes) <- primaryAssayNames
         origTypes <- rep("meta", length(newTypes))
         names(origTypes) <- paste(names(newTypes), "_orig", sep = "")
         newDef$type <- c(newDef$type, newTypes, origTypes)
         newDef$uniqueType <- c(newDef$uniqueType, names(newTypes), names(origTypes))
-        names(primaryAssayNames) <- levelNames
+        names(primaryAssayNames) <- levels
         newDef$primaryAssayNames <- c(newDef$primaryAssayNames, primaryAssayNames)
 
         # rowData type
-        rowDataName <- paste(levelNames, "Data", sep = "")
+        rowDataName <- paste(levels, "Data", sep = "")
         newTypes <- rep("row", length(rowDataName))
         names(newTypes) <- rowDataName
         origTypes <- rep("meta", length(newTypes))
@@ -270,17 +277,24 @@ initDGEobjDef <- function(levels, types, uniqueTypes){
         newDef$uniqueType <- c(newDef$uniqueType, names(newTypes))
     }
 
+    if (!missing(primaryAssayNames)) {
+        assertthat::assert_that(!missing(levels),
+                                msg = "Must use levels arg with primaryAssayNames.")
+    }
+
     if (!missing(types)) {
         assertthat::assert_that("character" %in% class(types),
                                 msg = "types argument must be a named character vector.")
         assertthat::assert_that(!is.null(names(types)),
                                 msg = "The types vector must have names.")
+        #only new types allowed, reject if type name already exists
         assertthat::assert_that(!any(names(types) %in% names(newDef$type)),
                                 msg = "At least one of the new types already exists.")
 
-        #all type values must be a base type
+        #all type values must be a basetype
         assertthat::assert_that(all(types %in% newDef$basetype),
-                                msg = paste("The type values must be one of:", paste(newDef$basetype, collapse = " ")))
+                                msg = paste("The type values must be one of:",
+                                            paste(newDef$basetype, collapse = " ")))
 
         #add the new type(s)
         newDef$type <- c(newDef$type, types)
@@ -298,4 +312,3 @@ initDGEobjDef <- function(levels, types, uniqueTypes){
 
     return(newDef)
 }
-
