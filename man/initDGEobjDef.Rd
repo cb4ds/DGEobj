@@ -4,12 +4,16 @@
 \alias{initDGEobjDef}
 \title{Instantiate a class DGEobjDef object.}
 \usage{
-initDGEobjDef(types, levels, uniqueTypes)
+initDGEobjDef(levels, primaryAssayNames, types, uniqueTypes)
 }
 \arguments{
-\item{types}{A named character vector of new types where the values indicate the basetype (optional)}
+\item{levels}{A character string or vector providing names for new levels}
 
-\item{levels}{A name or vector of names for new levels (optional)}
+\item{primaryAssayNames}{A character string or vector, must be the same length as levels
+This argument supplies the primaryAssayNames for the corresponding levels.}
+
+\item{types}{A named character vector of new types where the
+values indicate the basetype for each named type (optional)}
 
 \item{uniqueTypes}{A name or vector of names to add to the uniqueType list (optional)}
 }
@@ -24,11 +28,12 @@ Instantiate a class DGEobjDef object.
     myDGEobjDef <- initDGEobjDef()
 
     # Optionally add some new types and levels for metabolomics data
-    myDGEobjDef <- initDGEobjDef(
-                        types <- c(MSQuant = "assay"),
-                        levels <- "metabolites",
-                        uniqueTypes <- "MSQuant"
-                        )
+     myDGEobjDef <- initDGEobjDef(levels = "metabolomics",
+                                  primaryAssayNames = "intensity",
+                                  types <- c(normalizedIntensity = "assay"))
 
+    # When a new level is defined, the itemNames and types for the
+    # rowData and colData are automatically established.  The
+    # types argument is only needed to define downstream workflow objects.
 
 }

@@ -8,7 +8,7 @@ test_that('types.R: baseType()', {
     expect_equal(baseType(t_obj, "granges"), "row")
 
     expect_error(baseType(t_obj, "dog"),
-                 regexp = "subscript out of bounds")
+                 regexp = "The type is not defined on the DGEobj")
 })
 
 test_that('types.R: baseTypes()', {

@@ -36,6 +36,7 @@ suppressPackageStartupMessages({
 conflict_prefer("select",    "dplyr",   quiet = TRUE) 
 conflict_prefer("filter",    "dplyr",   quiet = TRUE)
 conflict_prefer("left_join", "dplyr",   quiet = TRUE)
+conflict_prefer("rename",    "dplyr",   quiet = TRUE)
 conflict_prefer("collapse",  "glue",    quiet = TRUE) 
 conflict_prefer("Position",  "ggplot2", quiet = TRUE) 
 
@@ -230,8 +231,11 @@ ens.ds      <- "rnorvegicus_gene_ensembl"
 ens.mart    <- useMart(biomart = "ensembl", dataset = ens.ds)
 ens.columns <- c("ensembl_gene_id", "rgd_symbol", "chromosome_name", "start_position",
                  "end_position", "strand", "gene_biotype", "description")
-ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart) %>%
-    distinct(ensembl_gene_id, .keep_all = T)
+ens.data    <- getBM(attributes = ens.columns, 
+                     values     = rownames(counts), 
+                     mart       = ens.mart, 
+                     useCache   = F) %>%
+               distinct(ensembl_gene_id, .keep_all = T)
 
 # Filter the list to the genes used in the test dataset and properly format gene
 # information for GenomicRanges use
@@ -244,6 +248,31 @@ gene.data <- left_join(data.frame(ensembl_gene_id = rownames(counts), stringsAsF
                               TRUE         ~ "*"))
 rownames(gene.data) <- gene.data$ensembl_gene_id
 ```
+
+```{r get_transcriptLength}
+# Get transcript level data and keep max for each gene, or alternatively, use the cds length
+
+ens.ds          <- "rnorvegicus_gene_ensembl"
+ens.mart        <- useMart(biomart = "ensembl", dataset = ens.ds)
+ens.columns     <- c("ensembl_gene_id", "ensembl_transcript_id", "transcript_length")
+transcript.data <- getBM(attributes = ens.columns, 
+                         values     = rownames(counts), 
+                         mart       = ens.mart, 
+                         useCache   = F) %>%
+                   arrange(desc(transcript_length)) %>%
+                   distinct(ensembl_gene_id, .keep_all = T)
+
+#Add a transcript_length column to gene.data
+gene.data <- left_join(gene.data, 
+                       select(transcript.data, ensembl_gene_id, ExonLength = transcript_length))
+rownames(gene.data) <- gene.data$ensembl_gene_id
+gene.data$ensembl_gene_id <- NULL
+
+# enforce same order as counts
+gene.data <- gene.data[rownames(counts),]
+
+```
+
 
 ### Validate Dataframe Relationships
 
@@ -641,7 +670,7 @@ MyDgeObj <- rmItem(dgeObj, "granges")
 
 To add or update a single attribute, use the base R`attr` function:  
 
-```{assignAttribute}
+```{r assignAttribute}
 attr(dgeObj, "Tissue")  <- "Liver"
 ```
 
@@ -673,9 +702,9 @@ User supplied meta data in the form of key/value pairs are attached to the DGEob
 
 ## Workflow attributes  
 
-Several attributes are used to capture information about each data item ("type", "basetype", "dateCreated" and "funArgs."), as well as relationships between them ("parent"). The `inventory` function provides a convenient table view of these attributes. Operationally, the value of each of these attributes is a named list where the names are the item names and the value is the value for that item. For example, to query just the basetype of the "design" itemName:  
+Several attributes are used to capture information about each data item ("type", "basetype", "dateCreated" and "funArgs."), as well as relationships between them ("parent"). The `inventory` function provides a convenient table view of these attributes. Operationally, the value of each of these attributes is a named list where the names are the item names and the value is the value for that item. For example, to query just the basetype attribute of the "design" itemName:  
 
-``` {r getBasetypeDesign}
+``` {r workflowAttributes}
 attr(dgeObj, "basetype")[["design"]]
 ```
 
@@ -692,37 +721,41 @@ defaultDGEobjDef <- initDGEobjDef()
 
 The initDGEobj function uses a default DGEobj definition tailored for the limma/voom workflow. If new data types are needed to support a different workflow, the user should define the new data types during a call to initDGEobjDef, and before calling the DGEobj constructor (initDGEobj). The initDGEobjDef function returns a DGEobjDef class object that can then be passed explicitly to initDGEobj.  
 
-There are three optional arguments to initDGEobjDef:  
+There are four optional arguments to initDGEobjDef:  
 
-*  *levels*: A named character vector. Names represent new level names. Values represent the primary assay itemName for each level. When a level is defined the itemNames and type definitions for the primary assay data, rowData and colData are automatically established. The types argument is only needed to define downstream workflow objects.  
+*  *levels*: A character string or vector of new level names.  
+*  *primaryAssayNames*: A character string or vector of itemNames for the primary assay matrix for each level.  Length must match length(levels). 
 *  *types*: A named character vector of new data types. Names represent the type name and values define the basetype for this type.  
 *  *uniqueTypes*: Adding a type name to this character vector restricts that data type to one instance per DGEobj.   
 
 The example below defines new types to accommodate metabolomics data.  
 
-```{r, eval = F}
+```{r initDGEObjDef}
 # simulate some data 
-nr = nrow(dgeObj)
-nc = ncol(dgeObj)
-myMolecules <- dgeObj$geneData
-design <- dgeObj$design
-myMSquant <- rnorm(nr * nc) %>%
-  exp() %>%
-  matrix(nrow = nr, ncol = nc) %>%
-  `rownames<-`(rownames(dgeObj)) %>%
-  `colnames<-`(colnames(dgeObj))
+nr <- nrow(dgeObj)
+nc <- ncol(dgeObj)
 
-myDGEobjDef <- initDGEobjDef(levels = c(metabolite = "intensity"),
+myMolecules <- dgeObj$geneData
+design      <- dgeObj$design
+
+myMSquant   <- rnorm(nr * nc) %>%
+  exp() %>%
+  matrix(nrow = nr, ncol = nc)
+
+rownames(myMSquant) <- rownames(dgeObj)
+colnames(myMSquant) <- colnames(dgeObj)
+
+myDGEobjDef <- initDGEobjDef(levels            = "metabolite",
+                             primaryAssayNames = "intensity",
                              types = c(normInt = "assay"))
 
 MetabolomicObj <- initDGEobj(primaryAssayData = myMSquant,
-                                 rowData = myMolecules,
-                                 colData = design,
-                                 level = "metabolite",
-                                 DGEobjDef = myDGEobjDef)
+                             rowData          = myMolecules,
+                             colData          = design,
+                             level            = "metabolite",
+                             DGEobjDef        = myDGEobjDef)
 kable(inventory(MetabolomicObj))
 ```
-
 
 There are simple dimension-based criteria to determine the basetype of a
 new datatype.
