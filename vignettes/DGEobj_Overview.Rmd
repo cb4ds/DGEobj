@@ -149,7 +149,7 @@ The following dataset was selected to demonstrate building and working with the 
 
 Briefly, livers were removed from rats 4 weeks after bile duct ligation or sham operation. Rat liver slices were incubated in vitro with potential anti-fibrotic compounds. At the end of the incubation whole transcriptome RNA-Seq analysis was performed.
 
-Files containing counts and sample annotations associated with this project will be downloaded from the [NCBI GEO resource](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120804).
+Files containing counts, sample annotations, and QC data associated with this project will be downloaded from the [NCBI GEO resource](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120804).
 
 The GEO data includes Ensembl gene IDs. Additional gene information such as chromosome positions, type of transcript, etc, will be downloaded from Ensembl using the biomaRt package.
 
