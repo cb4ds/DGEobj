@@ -5,4 +5,4 @@ require(DGEobj)
 require(GenomicRanges)
 
 t_obj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj", mustWork = TRUE))
-t_dim <- c(958, 48)
+t_dim <- c(964, 48)

@@ -28,6 +28,7 @@
 
              design       = "col",
              designMatrix = "col",
+             alignQC      = "col",
 
              counts             = "assay",
              effectiveLength    = "assay",

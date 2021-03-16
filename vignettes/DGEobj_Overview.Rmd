@@ -14,7 +14,7 @@ vignette: >
   %\VignetteEncoding{UTF-8} 
 ---
 
-```{r global options, include = FALSE}
+```{r global_options, include = FALSE}
 knitr::opts_chunk$set(echo    = TRUE, 
                       include = TRUE, 
                       warning = FALSE, 
@@ -170,7 +170,7 @@ See the "Customizing the DGEobj" section below to define new levels.
 
 ### Retrieve GEO data for GSE120804
 
-This GEO project includes a counts table and design table in the supplemental section. The data is downloaded to temp files and imported into data frames to prepare for building a DGEobj.
+This GEO project includes a counts table, design table, and QC metrics in the supplemental section. The data is downloaded to temp files and imported into data frames to prepare for building a DGEobj.
 
 ```{r downloadGEOData}
 # Get the raw counts and sample annotation ("design") from GEO
@@ -178,6 +178,7 @@ This GEO project includes a counts table and design table in the supplemental se
 getLocation <- "http://ftp.ncbi.nlm.nih.gov/geo/series/GSE120nnn/GSE120804/suppl"
 countsFile  <- "GSE120804_counts.txt.gz"
 designFile  <- "GSE120804_geo_sample_annotation_edit.csv.gz"
+qcFile      <- "GSE120804_qc_metrics.txt.gz"
 
 temp <- tempfile()
 if (download.file(glue("{getLocation}/{countsFile}"), destfile = temp, mode = 'wb') > 0) {
@@ -190,6 +191,12 @@ if (download.file(glue("{getLocation}/{designFile}"), destfile = temp, mode = 'w
     stop("Design Download Failed")
 }
 design <- read.csv(temp, stringsAsFactors = FALSE)
+
+temp <- tempfile()
+if (download.file(glue("{getLocation}/{qcFile}"), destfile = temp, mode = 'wb')) {
+    stop("Alignment QC Download Failed")
+}
+alignmentQC <- read.delim(temp, stringsAsFactors = FALSE)
 ```
 
 ### Prepare the Design Table
@@ -278,7 +285,7 @@ gene.data <- gene.data[rownames(counts),]
 
 As mentioned earlier, rownames and column names provide links between the three starting data frames.
 
-*  The rownames in the gene annotation must match the rownames in the counts matrix.
+* The rownames in the gene annotation must match the rownames in the counts matrix.
 * The rownames of the design table must match the colnames of the counts matrix.
 
 These statements perform a reality check on these two constraints.
@@ -437,9 +444,31 @@ names(dgeObj)
 
 ## Adding Items to a DGEobj  
 
+### Alignment QC Example  
+
+Often other sample-related information is available.  In this project, for example, the alignment statistics for the RNA-Seq were deposited in GEO and downloaded with the other data.  This example adds the alignment statistics to the DGEobj.   The alignment QC data as downloaded needs to be transposed to place samples in rows. Once transposed, this data meets the criteria for the colData type "alignQC" and is added to the DGEobj.  As a new data item not derived directly from the existing items, the alignment QC lacks parent or funArgs values in this context.  
+
+```{r addItem_alignQC}
+rownames(alignmentQC) <- alignmentQC$Metric
+
+alignmentQC <- alignmentQC %>% 
+    select(-Metric) %>%
+    t() %>% 
+    as.data.frame()
+
+dgeObj <- addItem(dgeObj,
+                  item = alignmentQC,
+                  itemName = "AlignmentQC",
+                  itemType = "alignQC", 
+                  parent = "",
+                  funArgs = "")
+```
+
+### A Workflow Example  
+
 As an analysis progresses, the data analyst should capture intermediate data objects deemed important to properly documenting the workflow. In the example here, the counts will be normalized and the resulting DGElist data item added to the DGEobj.  
 
-```{r addItem}
+```{r addItem_norm}
 # Perform TMM normalization on the raw counts
 dgelist <- dgeObj$counts %>%
   DGEList() %>%

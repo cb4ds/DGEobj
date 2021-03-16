@@ -27,8 +27,8 @@ test_that('subset.R: subset()', {
     expect_equal(dim(subsett_obj_3.0), c(5, 5))
 
     subsett_obj_4 <- subset(t_obj,
-                             row = c("ENSRNOG00000015473", "ENSRNOG00000012074"),
-                             col = c("T_20170823MAN1_C05P01", "T_20170823MAN1_H06P01"))
+                             row = t_obj$geneData$ensembl_gene_id[1:2],
+                             col = colnames(t_obj$counts)[1:2])
     expect_equal(dim(subsett_obj_4), c(2, 2))
 
     expect_equivalent(t_obj, t_obj[])

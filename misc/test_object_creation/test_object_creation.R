@@ -12,8 +12,13 @@ suppressPackageStartupMessages({
 
 
 # utility to run the workflow to create the example objects
-dge_creation_workflow <- function(counts, gene.data, design, contrast_list, annotation_file, limit_genes = NULL) {
+dge_creation_workflow <- function(counts, gene.data, design, qcdata, contrast_list, annotation_file, limit_genes = NULL) {
     result <- initDGEobj(counts, gene.data, design, level = "gene")
+
+    result <- addItem(result,
+                      item = qcdata,
+                      itemName = "AlignmentQC",
+                      itemType = "alignQC")
 
     # Low intensity Filtering
     result <- lowIntFilter(result,
@@ -73,8 +78,10 @@ dge_creation_workflow <- function(counts, gene.data, design, contrast_list, anno
 ## Source: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120804
 getLocation <- "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE120nnn/GSE120804/suppl"
 
-countsFile <- "GSE120804_counts.txt.gz"
-designFile <- "GSE120804_geo_sample_annotation_edit.csv.gz"
+countsFile  <- "GSE120804_counts.txt.gz"
+designFile  <- "GSE120804_geo_sample_annotation_edit.csv.gz"
+qcFile      <- "GSE120804_qc_metrics.txt.gz"
+
 annotatFile <- "data/GSE120804_metadata.txt"
 
 # acquire raw data
@@ -90,13 +97,21 @@ design <- read.csv(glue("data/{designFile}"), stringsAsFactors = FALSE)  %>%
     rename(ReplicateGroup = Replicate.group)
 rownames(design) <- str_sub(design$raw.file, start = 1, end = 21)
 
+download.file(glue("{getLocation}/{qcFile}"),
+              destfile = glue("data/{qcFile}"),
+              mode = 'wb')
+qcdata <- read.delim(glue("data/{qcFile}"), stringsAsFactors = FALSE)
+rownames(qcdata) <- qcdata$Metric
+qcdata <- qcdata %>%
+    select(-Metric) %>%
+    t() %>% as.data.frame()
 
 # get gene information from BioMart
 ens.ds      <- "rnorvegicus_gene_ensembl"
 ens.mart    <- useMart(biomart = "ensembl", dataset = ens.ds)
 ens.columns <- c("ensembl_gene_id", "rgd_symbol", "chromosome_name", "start_position",
                  "end_position", "strand", "gene_biotype", "description")
-ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart) %>%
+ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart, useCache = F) %>%
     distinct(ensembl_gene_id, .keep_all = T)
 
 # properly format gene information for GenomicRanges use
@@ -117,8 +132,8 @@ contrast_list  <- list(BDL_vs_Sham = "ReplicateGroupBDL - ReplicateGroupSham",
 
 
 # full size
-full.dge <- dge_creation_workflow(counts, gene.data, design, contrast_list, annotatFile)
+full.dge <- dge_creation_workflow(counts, gene.data, design, qcdata, contrast_list, annotatFile)
 saveRDS(full.dge, "fullObj.RDS")
 
-sm.dge <- dge_creation_workflow(counts, gene.data, design, contrast_list, annotatFile, limit_genes = 1000)
+sm.dge <- dge_creation_workflow(counts, gene.data, design, qcdata, contrast_list, annotatFile, limit_genes = 1000)
 saveRDS(sm.dge, 'exampleObj.RDS')
