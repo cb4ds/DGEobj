@@ -173,7 +173,7 @@ See the "Customizing the DGEobj" section below to define new levels.
 This GEO project includes a counts table, design table, and QC metrics in the supplemental section. The data is downloaded to temp files and imported into data frames to prepare for building a DGEobj.
 
 ```{r downloadGEOData}
-# Get the raw counts and sample annotation ("design") from GEO
+# Get the raw counts, sample annotation ("design") and QC data from GEO
 # Source: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE120804
 getLocation <- "http://ftp.ncbi.nlm.nih.gov/geo/series/GSE120nnn/GSE120804/suppl"
 countsFile  <- "GSE120804_counts.txt.gz"
@@ -459,9 +459,7 @@ alignmentQC <- alignmentQC %>%
 dgeObj <- addItem(dgeObj,
                   item = alignmentQC,
                   itemName = "AlignmentQC",
-                  itemType = "alignQC", 
-                  parent = "",
-                  funArgs = "")
+                  itemType = "alignQC")
 ```
 
 ### A Workflow Example  
