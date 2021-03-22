@@ -29,7 +29,7 @@ dge_creation_workflow <- function(counts, gene.data, design, qcdata, contrast_li
     if (!is.null(limit_genes)) {
         keep.genes <- sample(rownames(result$counts), size = limit_genes)
         result <- initDGEobj(counts[rownames(counts) %in% keep.genes, ],
-                             gene.data[gene.data$ensembl_gene_id %in% keep.genes,],
+                             gene.data[rownames(gene.data) %in% keep.genes,],
                              design, level = "gene")
     }
 
@@ -114,15 +114,32 @@ ens.columns <- c("ensembl_gene_id", "rgd_symbol", "chromosome_name", "start_posi
 ens.data    <- getBM(attributes = ens.columns, values = rownames(counts), mart = ens.mart, useCache = F) %>%
     distinct(ensembl_gene_id, .keep_all = T)
 
-# properly format gene information for GenomicRanges use
+# Filter the list to the genes used in the test dataset and format gene info for GenomicRanges
 gene.data <- left_join(data.frame(ensembl_gene_id = rownames(counts), stringsAsFactors = F),
                        ens.data,
                        by = "ensembl_gene_id") %>%
-    dplyr::rename(start = start_position, end = end_position) %>%
+    rename(start = start_position, end = end_position) %>%
     mutate(strand = case_when(strand == -1 ~ "-",
                               strand == 1  ~ "+",
                               TRUE         ~ "*"))
 rownames(gene.data) <- gene.data$ensembl_gene_id
+
+# Get transcript level data and keep max for each gene, or alternatively, use the cds length
+ens.columns     <- c("ensembl_gene_id", "ensembl_transcript_id", "transcript_length")
+transcript.data <- getBM(attributes = ens.columns,
+                         values     = rownames(counts),
+                         mart       = ens.mart,
+                         useCache   = F) %>%
+    arrange(desc(transcript_length)) %>%
+    distinct(ensembl_gene_id, .keep_all = T)
+
+gene.data <- left_join(gene.data,
+                       select(transcript.data, ensembl_gene_id, ExonLength = transcript_length))
+rownames(gene.data) <- gene.data$ensembl_gene_id
+gene.data$ensembl_gene_id <- NULL
+
+# enforce same order as counts
+gene.data <- gene.data[rownames(counts), ]
 
 contrast_list  <- list(BDL_vs_Sham = "ReplicateGroupBDL - ReplicateGroupSham",
                        EXT1024_vs_BDL = "ReplicateGroupBDL_EXT.1024  - ReplicateGroupBDL",
