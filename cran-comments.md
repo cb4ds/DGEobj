@@ -49,5 +49,5 @@ devtools::check()
 ```
 revdepcheck::cran_revdeps('DGEobj', bioc = T)
 
-character(0)
+[1] "DGEobj"
 ```

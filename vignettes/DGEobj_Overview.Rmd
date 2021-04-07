@@ -26,7 +26,6 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(glue)
     library(edgeR)
-    library(kableExtra)
     library(DGEobj)
     library(stringr)
     library(knitr)
@@ -96,7 +95,7 @@ Importantly, multiple instances of each type are allowed (exceptions described i
 
 The DGEobj package implements an S3 class data object, the DGEobj, that conceptually represents an extension of the capabilities of the RangedSummarizedExperiment (RSE) originally developed by Martin Morgan et al. Both the DGEobj and the RSE object capture the initial data for a differential gene expression analysis, namely a counts matrix along with associated gene and sample annotation. Additionally, the DGEobj extends this concept to support capture of various downstream data objects, the intermediate steps in an analysis, and thus capture the entire workflow of an analysis project.
 
-The availabilty of a collection of results in a specific structured data object has multiple advantages. Sharing DGE results with other colleagues is simplified because the entire analysis is encapsulated and documented within the DGEobj. A recipient of data in this format can examine details of the analysis based on the annotation built into the DGE object. Downstream users of a dataset can drill back to the original data or tap any intermediate data items the original analyst captured. Importantly, assembling a collection of DGE projects in a structured format enables facile automation of integrative multi-project metaanalyses.
+The availability of a collection of results in a specific structured data object has multiple advantages. Sharing DGE results with other colleagues is simplified because the entire analysis is encapsulated and documented within the DGEobj. A recipient of data in this format can examine details of the analysis based on the annotation built into the DGE object. Downstream users of a dataset can drill back to the original data or tap any intermediate data items the original analyst captured. Importantly, assembling a collection of DGE projects in a structured format enables facile automation of integrative multi-project metaanalyses.
 
 The RSE object, which motivated building the DGEobj, can capture as many assays as desired. An "assay" is defined as any matrix with n genes (rows) and m samples (columns). A limitation of the RSE object however is that the RSE only allows 1 instance of row data (typically gene annotation) and 1 instance of column data (sample annotation with one row for every column of data in the assay slot). This limits the RSE in terms of its ability to hold downstream data objects because many of those objects meet the definition of row data also (e.g. DGElist, Fit objects, topTable output). Other types of data (e.g. design matrices, sample QC) meet the definition of column data. Thus, the DGEobj was modeled after the RSE object, but extended to accommodate multiple row and column data types. The DGEobj is thus uniquely suited to capturing the entire workflow of a DGE analysis.
 
@@ -124,7 +123,7 @@ See the "Customizing the DGEobj" section below to define new levels.
 
 Gene level data will be used within this vignette.
 
-Several levels are predefined for DGEobj objects to accomodate RNA and proteomic applications (allowedLevels = c("gene", "isoform", "exon", "proteingroup", "peptide", "ptm", "protein")). A DGEobj may contain only one of these levels. Thus a user would need to create separate DGEobjs for gene and isoform level data in an RNA transcription analysis mode. Gene level data will be used Within this vignette.
+Several levels are predefined for DGEobj objects to accommodate RNA and proteomic applications (allowedLevels = c("gene", "isoform", "exon", "proteingroup", "peptide", "ptm", "protein")). A DGEobj may contain only one of these levels. Thus a user would need to create separate DGEobjs for gene and isoform level data in an RNA transcription analysis mode. Gene level data will be used Within this vignette.
 
 An analysis can become multi-threaded. For example, multiple models can be fit to one dataset each with its own set of contrasts. Two features of the DGEobj serve to manage multi-threaded analyses. First, only one instance of the starting data types are allowed. Thus all analysis thread map back to the starting data. Secondly, parent/child relationships are captured. Each data item carries a parent attribute that holds the item name of the parent data item. In this way, for example, a topTable item can be linked to the design matrix and fit that produced it.
 

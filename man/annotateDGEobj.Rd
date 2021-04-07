@@ -21,7 +21,7 @@ keys to read from the file.}
 A DGEobj
 }
 \description{
-Reads an annotation file containg key/value pairs or a named list and attaches them
+Reads an annotation file containing key/value pairs or a named list and attaches them
 attributes to a DGEobj. If a file is used, it should be a text file
 containing key/value pairs separated by an equals sign. The keys argument
 specifies which keys we want to capture as attributes on the DGEobj.

@@ -34,7 +34,6 @@ Suggests:
     conflicted,
     dplyr,
     glue,
-    kableExtra,
     knitr,
     rmarkdown,
     testthat,
