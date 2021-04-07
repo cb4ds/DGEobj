@@ -48,8 +48,8 @@ test_that('get.R: getBaseType()', {
     getBaseType_DGEobj_test <- getBaseType(t_obj, "col")
 
     expect_type(getBaseType_DGEobj_test, 'list')
-    expect_equal(length(getBaseType_DGEobj_test), 1)
-    expect_setequal(names(getBaseType_DGEobj_test), c("design"))
+    expect_equal(length(getBaseType_DGEobj_test), 2)
+    expect_setequal(names(getBaseType_DGEobj_test), c("design", "ReplicateGroupDesign"))
 
     expect_error(getBaseType(t_obj, "counts"),
                  regexp = "baseType must be one of: row, col, assay, meta")
