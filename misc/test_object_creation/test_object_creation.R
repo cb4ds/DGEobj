@@ -106,6 +106,14 @@ qcdata <- qcdata %>%
     select(-Metric) %>%
     t() %>% as.data.frame()
 
+# Create a DiseaseStatus column by parsing ReplicateGroup
+design$DiseaseStatus <- rep("Sham", nrow(design))
+idx <- str_detect(design$ReplicateGroup, "BDL")
+design$DiseaseStatus[idx] <- "BDL"
+
+# Create an animal# column.  The animal number is encoded in the sample.name column
+design$AnimalNum <- str_match(design$Sample.name, "r[0-9]{1,3}")
+
 # get gene information from BioMart
 ens.ds      <- "rnorvegicus_gene_ensembl"
 ens.mart    <- useMart(biomart = "ensembl", dataset = ens.ds)
