@@ -38,5 +38,6 @@ Suggests:
     rmarkdown,
     testthat,
     biomaRt,
-    edgeR
+    edgeR,
+    xml2
 VignetteBuilder: knitr
