@@ -6,7 +6,7 @@ test_that('get.R: getItem()', {
 
     expect_true(is.data.frame(getItem_DGEobj_test))
     expect_equal(nrow(getItem_DGEobj_test), 48)
-    expect_equal(ncol(getItem_DGEobj_test), 8)
+    expect_equal(ncol(getItem_DGEobj_test), 10)
 
     expect_error(getItem(t_obj, 'fred'),
                  regexp = "The requested itemName should be in the DGEobj. Use names(dgeObj) to see the available items.",

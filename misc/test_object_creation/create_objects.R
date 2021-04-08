@@ -36,6 +36,9 @@ dge_creation_workflow <- function(counts, gene.data, design, qcdata, contrast_li
     # Annotations
     result <- annotateDGEobj(result, annotation_file)
 
+    # --- To save partial objects for use in the DGEobj.utils vignette
+    # saveRDS(result, glue("simple{ifelse(is.null(limit_genes), '', limit_genes)}.RDS"))
+
     # Protein Coding Filtering
     result <- result[result$geneData$gene_biotype == "protein_coding", ]
 
