@@ -3,6 +3,7 @@
 * significant documentation review/updates
 * underlying structure - added a few new fields and cleaned up unneeded methods
 * updated the example object with additional field information
+* precompiled the vignette to avoid hitting internet resources and performing intensive calculations with each CMD check
 
 ---  
 
@@ -17,7 +18,7 @@ Travis-CI (ubuntu 16.04.6)
 
 * R 3.6.3
 * R 4.0.2
-* R devel (2021-04-05 r80145)
+* R devel (2021-04-08 r80148)
 
 WinBuilder
 
