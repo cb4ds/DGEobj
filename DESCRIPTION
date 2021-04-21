@@ -29,7 +29,6 @@ Imports:
     stringr,
     utils,
     GenomicRanges
-RoxygenNote: 7.1.1
 Suggests: 
     conflicted,
     dplyr,
@@ -39,4 +38,6 @@ Suggests:
     testthat,
     biomaRt,
     edgeR
+biocViews:
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
