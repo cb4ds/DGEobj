@@ -28,9 +28,10 @@ jobs:
           name: Install R dependencies
           command: |
             R -e 'install.packages("BiocManager")'
-            R -e 'BiocManager::install(c("GenomicRanges", "edgeR"))'
+            R -e 'BiocManager::install(c("GenomicRanges", "edgeR", "bioMart"))'
             R -e 'install.packages("covr")'
             R -e 'install.packages("remotes")'
+            R -e 'install.package("conflicted")
             R -e 'remotes::install_deps(dependencies = TRUE)'
       - run:
           name: Session information and installed package versions
@@ -73,8 +74,11 @@ jobs:
           name: Install R dependencies
           command: |
             R -e 'install.packages("BiocManager")'
-            R -e 'BiocManager::install(c("GenomicRanges", "edgeR"))'
+            R -e 'BiocManager::install(c("GenomicRanges", "edgeR", "bioMart"))'
             R -e 'install.packages("covr")'
+            R -e 'install.packages("remotes")'
+            R -e 'install.package("conflicted")
+            R -e 'remotes::install_deps(dependencies = TRUE)'
       - run:
           name: Session information and installed package versions
           command: |
