@@ -53,6 +53,7 @@ jobs:
   Build-for-rLATEST:
     docker:
       - image: rocker/verse:latest
+    resource_class: medium
 
     steps:
       - checkout
