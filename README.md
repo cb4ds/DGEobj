@@ -2,8 +2,8 @@
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj) 
-[![CRAN_Downloads_Badge](https://cranlogs.r-pkg.org/badges/grand-total/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj) 
-[![Travis build status](https://travis-ci.com/cb4ds/DGEobj.svg?branch=master)](https://travis-ci.com/cb4ds/DGEobj?branch=master)
+[![CRAN_Downloads_Badge](https://cranlogs.r-pkg.org/badges/grand-total/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj)
+[![CircleCI](https://circleci.com/gh/cb4ds/DGEobj/tree/master.svg?style=svg)](https://circleci.com/gh/cb4ds/DGEobj/tree/master)
 [![Codecov test coverage](https://codecov.io/gh/cb4ds/DGEobj/branch/master/graph/badge.svg)](https://codecov.io/gh/cb4ds/DGEobj?branch=master)
 <!-- badges: end -->
 
