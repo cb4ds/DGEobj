@@ -41,10 +41,8 @@ resetDGEobj <- function(dgeObj){
         rowData <- getItem(dgeObj, "isoformData_orig")
     } else if ("exonData_orig" %in% names(dgeObj)) {
         rowData <- getItem(dgeObj, "exonData_orig")
-    } else if ("proteinData_orig" %in% names(dgeObj)) {
-        rowData <- getItem(dgeObj, "proteinData_orig")
     } else {
-        stop("Gene/isoform/exon/protein data not found")
+        stop("Gene/isoform/exon data not found")
     }
 
     if (tolower(platformType) %in% platform.types) {

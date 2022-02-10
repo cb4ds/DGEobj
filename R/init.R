@@ -55,7 +55,7 @@ initDGEobj <- function(primaryAssayData,
     assertthat::assert_that(is.matrix(primaryAssayData) | is.data.frame(primaryAssayData),
                             msg = "primaryAssayData must be specified as a matrix or a data.frame.")
     assertthat::assert_that(level %in% DGEobjDef$allowedLevels,
-                            msg = paste('The specified level must be one of: ', paste(DGEobjDef$allowedLevels, collapse=", ")))
+                            msg = paste('The specified level must be one of: ', paste(DGEobjDef$allowedLevels, collapse = ", ")))
     assertthat::assert_that(!is.null(rownames(primaryAssayData)),
                             !is.null(colnames(primaryAssayData)),
                             !is.null(rownames(rowData)),
@@ -83,8 +83,8 @@ initDGEobj <- function(primaryAssayData,
     )
 
     if (!allowShortSampleIDs == TRUE) {
-        suppressWarnings(
-            test <- as.numeric(rownames(colData))
+        suppressWarnings({
+            test <- as.numeric(rownames(colData))}
         )
 
         if (all(is.na(test)) == FALSE) {
@@ -101,7 +101,8 @@ initDGEobj <- function(primaryAssayData,
 
     funArgs <- match.call()
 
-    result <- try(primaryAssayData <- as.matrix(primaryAssayData), silent = TRUE)
+    result <- try({primaryAssayData <- as.matrix(primaryAssayData)}, silent = TRUE)
+
     if (any(class(result) == "try-error"))
         stop("Couldn't coerce primaryAssayData to a numeric matrix!")
 
@@ -120,15 +121,15 @@ initDGEobj <- function(primaryAssayData,
     # Add DGEobj version (not the package version)
     # This will only change when there is a substantive change
     # to the base DGEobj structure
-    attr(dgeObj, "DGEobjDef.version") <- "1.1"
+    attr(dgeObj, "DGEobjDef.version") <- "1.2"
 
     # Load required items
     # primaryAssayData (counts for RNA-Seq)
     primaryAssayName = DGEobjDef$primaryAssayNames[[level]]
     dgeObj <- addItem(dgeObj,
                       item = primaryAssayData,
-                      itemName = paste(primaryAssayName, "_orig", sep=""),
-                      itemType = paste(primaryAssayName, "_orig", sep=""),
+                      itemName = paste(primaryAssayName, "_orig", sep = ""),
+                      itemType = paste(primaryAssayName, "_orig", sep = ""),
                       funArgs = funArgs,
                       parent = "",
                       init = TRUE
@@ -139,7 +140,7 @@ initDGEobj <- function(primaryAssayData,
                       itemName = DGEobjDef$primaryAssayNames[[level]],
                       itemType = DGEobjDef$primaryAssayNames[[level]],
                       funArgs = funArgs,
-                      parent = paste(primaryAssayName, "_orig", sep=""),
+                      parent = paste(primaryAssayName, "_orig", sep = ""),
                       init = TRUE
     )
 
@@ -183,24 +184,26 @@ initDGEobj <- function(primaryAssayData,
     # Annotate the level
     dgeObj %<>% setAttributes(list(level = level))
 
-    result <- try({gr <- GenomicRanges::GRanges(rowData)}, silent = TRUE)
+    if (level %in% c("exon", "gene")) {
+        result <- try({gr <- GenomicRanges::GRanges(rowData)}, silent = TRUE)
 
-    if (class(result) == "try-error") {
-        warning("Couldn't build a GRanges object!")
-    } else {
-        dgeObj <- addItem(dgeObj,
-                          item = gr,
-                          itemName = "granges_orig",
-                          itemType = "granges_orig",
-                          funArgs = funArgs,
-                          parent = paste(grparent, "_orig", sep = ""))
+        if (class(result) == "try-error") {
+            warning("Couldn't build a GRanges object!")
+        } else {
+            dgeObj <- addItem(dgeObj,
+                              item = gr,
+                              itemName = "granges_orig",
+                              itemType = "granges_orig",
+                              funArgs = funArgs,
+                              parent = paste(grparent, "_orig", sep = ""))
 
-        dgeObj <- addItem(dgeObj,
-                          item = gr,
-                          itemName = "granges",
-                          itemType = "granges",
-                          funArgs = funArgs,
-                          parent = grparent)
+            dgeObj <- addItem(dgeObj,
+                              item = gr,
+                              itemName = "granges",
+                              itemType = "granges",
+                              funArgs = funArgs,
+                              parent = grparent)
+        }
     }
 
     if (!missing(customAttr))

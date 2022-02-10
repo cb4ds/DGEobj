@@ -31,6 +31,7 @@
              alignQC      = "col",
 
              counts             = "assay",
+             intensities        = "assay",
              effectiveLength    = "assay",
              AffyRMA            = "assay",
              DGEList            = "assay",
@@ -39,15 +40,17 @@
              corFit             = "meta",
              topTreat           = "meta",
              geneList           = "meta",  #intended for short gene lists
-             pathway            = "meta",   #should consider format standards for genelists and pathways
+             pathway            = "meta",  #should consider format standards for genelists and pathways
              URL                = "meta",
              contrast_fit_treat = "meta",
              contrastMatrix     = "meta",
+             imputationMatrix   = "meta",
 
              #types with _orig suffix are intended to store the initialized data
-             #in its original state (i.e. before subsetting)
+             #in its original state (i.e. before subsetting, normalizing)
              geneData_orig        = "meta",
              isoformData_orig     = "meta",
+             intensities_orig     = "meta",
              exonData_orig        = "meta",
              granges_orig         = "meta",
              counts_orig          = "meta",
@@ -81,7 +84,7 @@
     allowedLevels = c("gene", "isoform", "exon", "affy"),
 
     primaryAssayNames = c(gene    = "counts",
-                          isoform = "counts",
+                          isoform = "intensities",
                           exon    = "counts",
                           affy    = "AffyRMA")
 )
