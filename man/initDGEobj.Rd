@@ -46,7 +46,7 @@ Initialize with base data (primaryAssayData, row annotations, col annotations)
 }
 \examples{
 
-   dgeObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
+   dgeObj   <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
    MyCounts <- dgeObj$counts
    geneinfo <- dgeObj$geneData
    sampinfo <- dgeObj$design

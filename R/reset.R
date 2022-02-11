@@ -29,15 +29,17 @@ resetDGEobj <- function(dgeObj){
     assertthat::assert_that(!is.null(attr(dgeObj, "PlatformType")),
                             msg = "Required attribute \"PlatformType\" is missing.")
 
+    level     <- attr(dgeObj, "level")
+    def       <- attr(dgeObj, "objDef")
     design    <- getItem(dgeObj, "design_orig")
-    paData    <- getItem(dgeObj, paste(DGEobjDef$primaryAssayNames[[level]], "_orig", sep = ""))
+    paData    <- getItem(dgeObj, paste(def$primaryAssayNames[[level]], "_orig", sep = ""))
     levelData <- getItem(dgeObj, paste(level, "Data_orig", sep = ""))
 
     newObj  <- initDGEobj(primaryAssayData = paData,
                           rowData          = levelData,
                           colData          = design,
-                          level            = attr(dgeObj, "level"),
-                          DGEobjDef        = attr(dgeObj, "objDef"))
+                          level            = level,
+                          DGEobjDef        = def)
 
     excludeList <- list("names",
                         "class",
@@ -53,6 +55,9 @@ resetDGEobj <- function(dgeObj){
                         "funArgs",
                         "level",
                         "dateCreated")
+
+    attributes.dgeObj <- getAttributes(dgeObj, excludeList = excludeList)
+
     for (at in names(attributes.dgeObj)) {
         attr(newObj, at) <- attributes.dgeObj[[at]]
     }
