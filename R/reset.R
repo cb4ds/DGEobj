@@ -22,8 +22,6 @@
 #'
 #' @export
 resetDGEobj <- function(dgeObj){
-    platform.types <- c("rna-seq", "rnaseq", "affymetrix")
-
     assertthat::assert_that("DGEobj" %in% class(dgeObj),
                             msg = "The DGEobj must be of class 'DGEobj'.")
     assertthat::assert_that(!is.null(attr(dgeObj, "level")),
@@ -31,44 +29,15 @@ resetDGEobj <- function(dgeObj){
     assertthat::assert_that(!is.null(attr(dgeObj, "PlatformType")),
                             msg = "Required attribute \"PlatformType\" is missing.")
 
-    platformType <- tolower(attr(dgeObj, "PlatformType"))
-    counts       <- getItem(dgeObj, "counts_orig")
-    design       <- getItem(dgeObj, "design_orig")
+    design    <- getItem(dgeObj, "design_orig")
+    paData    <- getItem(dgeObj, paste(DGEobjDef$primaryAssayNames[[level]], "_orig", sep = ""))
+    levelData <- getItem(dgeObj, paste(level, "Data_orig", sep = ""))
 
-    if ("geneData_orig" %in% names(dgeObj)) {
-        rowData <- getItem(dgeObj, "geneData_orig")
-    } else if ("exonData_orig" %in% names(dgeObj)) {
-        rowData <- getItem(dgeObj, "exonData_orig")
-    } else if ("isoformData_orig" %in% names(dgeObj)) {
-        rowData <- getItem(dgeObj, "isoformData_orig")
-    } else if ("proteinData_orig" %in% names(dgeObj)) {
-        rowData <- getItem(dgeObj, "proteinData_orig")
-    } else {
-        stop("Gene/exon/isoform/protein data not found")
-    }
-
-    if (tolower(platformType) %in% platform.types) {
-        newObj <- initDGEobj(primaryAssayData = counts,
-                             rowData   = rowData,
-                             colData   = design,
-                             level     = attr(dgeObj, "level"),
-                             DGEobjDef = attr(dgeObj, "objDef"))
-    } else {
-        stop("The PlatformType attribute value was not recognized!")
-    }
-
-    if ("effectiveLength_orig" %in% names(dgeObj)) {
-        newObj <- addItem(newObj,
-                          item = dgeObj$effectiveLength_orig,
-                          itemName = "effectiveLength_orig",
-                          itemType = "effectiveLength_orig")
-
-        newObj <- addItem(newObj,
-                          item = dgeObj$effectiveLength_orig,
-                          itemName = "effectiveLength",
-                          itemType = "effectiveLength",
-                          parent = "effectiveLength_orig")
-    }
+    newObj  <- initDGEobj(primaryAssayData = paData,
+                          rowData          = levelData,
+                          colData          = design,
+                          level            = attr(dgeObj, "level"),
+                          DGEobjDef        = attr(dgeObj, "objDef"))
 
     excludeList <- list("names",
                         "class",
@@ -84,7 +53,6 @@ resetDGEobj <- function(dgeObj){
                         "funArgs",
                         "level",
                         "dateCreated")
-    attributes.dgeObj <- getAttributes(dgeObj, excludeList = excludeList)
     for (at in names(attributes.dgeObj)) {
         attr(newObj, at) <- attributes.dgeObj[[at]]
     }

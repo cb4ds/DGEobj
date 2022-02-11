@@ -21,7 +21,7 @@
 #'
 #' @examples
 #'
-#'    dgeObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
+#'    dgeObj   <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
 #'    MyCounts <- dgeObj$counts
 #'    geneinfo <- dgeObj$geneData
 #'    sampinfo <- dgeObj$design
@@ -123,40 +123,39 @@ initDGEobj <- function(primaryAssayData,
     attr(dgeObj, "DGEobjDef.version") <- "1.2"
 
     # Load required items
+
     # primaryAssayData (counts for RNA-Seq)
     primaryAssayName = DGEobjDef$primaryAssayNames[[level]]
     dgeObj <- addItem(dgeObj,
-                      item = primaryAssayData,
+                      item     = primaryAssayData,
                       itemName = paste(primaryAssayName, "_orig", sep = ""),
                       itemType = paste(primaryAssayName, "_orig", sep = ""),
-                      funArgs = funArgs,
-                      parent = "",
-                      init = TRUE
-    )
+                      funArgs  = funArgs,
+                      parent   = "",
+                      init     = TRUE)
 
     dgeObj <- addItem(dgeObj,
-                      item = primaryAssayData,
+                      item     = primaryAssayData,
                       itemName = DGEobjDef$primaryAssayNames[[level]],
                       itemType = DGEobjDef$primaryAssayNames[[level]],
-                      funArgs = funArgs,
-                      parent = paste(primaryAssayName, "_orig", sep = ""),
-                      init = TRUE
-    )
+                      funArgs  = funArgs,
+                      parent   = paste(primaryAssayName, "_orig", sep = ""),
+                      init     = TRUE)
 
     # colData
     dgeObj <- addItem(dgeObj,
-                      item = colData,
+                      item     = colData,
                       itemName = "design_orig",
                       itemType = "design_orig",
-                      funArgs = funArgs,
-                      parent = "")
+                      funArgs  = funArgs,
+                      parent   = "")
 
     dgeObj <- addItem(dgeObj,
-                      item = colData,
+                      item     = colData,
                       itemName = "design",
                       itemType = "design",
-                      funArgs = funArgs,
-                      parent = "design_orig")
+                      funArgs  = funArgs,
+                      parent   = "design_orig")
 
     # rowData
     level    <- tolower(level)
@@ -167,18 +166,18 @@ initDGEobj <- function(primaryAssayData,
     grparent <- itemName
 
     dgeObj <- addItem(dgeObj,
-                      item = rowData,
+                      item     = rowData,
                       itemName = parent,
                       itemType = parent,
-                      funArgs = funArgs,
-                      parent = "")
+                      funArgs  = funArgs,
+                      parent   = "")
 
     dgeObj <- addItem(dgeObj,
-                      item = rowData,
+                      item     = rowData,
                       itemName = itemName,
                       itemType = itemType,
-                      funArgs = funArgs,
-                      parent = parent)
+                      funArgs  = funArgs,
+                      parent   = parent)
 
     # Annotate the level
     dgeObj %<>% setAttributes(list(level = level))
@@ -195,18 +194,18 @@ initDGEobj <- function(primaryAssayData,
 
             if (class(result) != "try-error") {
                 dgeObj <- addItem(dgeObj,
-                                  item = gr,
+                                  item     = gr,
                                   itemName = "granges_orig",
                                   itemType = "granges_orig",
-                                  funArgs = funArgs,
-                                  parent = paste(grparent, "_orig", sep = ""))
+                                  funArgs  = funArgs,
+                                  parent   = paste(grparent, "_orig", sep = ""))
 
                 dgeObj <- addItem(dgeObj,
-                                  item = gr,
+                                  item     = gr,
                                   itemName = "granges",
                                   itemType = "granges",
-                                  funArgs = funArgs,
-                                  parent = grparent)
+                                  funArgs  = funArgs,
+                                  parent   = grparent)
                 gr_success <- TRUE
             }
         }
