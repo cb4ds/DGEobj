@@ -17,8 +17,9 @@
              meta  = "meta",
 
              geneData    = "row",
-             isoformData = "row",
              exonData    = "row",
+             isoformData = "row",
+             proteinData = "row",
              affyData    = "row",
              granges     = "row",
 
@@ -37,6 +38,7 @@
              DGEList            = "assay",
              Elist              = "assay",
              isoformFrac        = "assay",
+
              corFit             = "meta",
              topTreat           = "meta",
              geneList           = "meta",  #intended for short gene lists
@@ -48,14 +50,15 @@
 
              #types with _orig suffix are intended to store the initialized data
              #in its original state (i.e. before subsetting, normalizing)
-             geneData_orig        = "meta",
-             isoformData_orig     = "meta",
-             intensities_orig     = "meta",
-             exonData_orig        = "meta",
-             granges_orig         = "meta",
              counts_orig          = "meta",
-             design_orig          = "meta",
+             intensities_orig     = "meta",
              effectiveLength_orig = "meta",
+             geneData_orig        = "meta",
+             exonData_orig        = "meta",
+             isoformData_orig     = "meta",
+             proteinData_orig     = "meta",
+             granges_orig         = "meta",
+             design_orig          = "meta",
              AffyRMA_orig         = "meta",
              svobj                = "meta"
     ),
@@ -65,27 +68,30 @@
                    "counts_orig",
                    "design",
                    "design_orig",
+                   "intensities",
+                   "intensities_orig",
                    "geneData",
                    "geneData_orig",
-                   "isoformData",
-                   "isoformData_orig",
                    "exonData",
                    "exonData_orig",
+                   "isoformData",
+                   "isoformData_orig",
+                   "proteinDaa",
+                   "proteinData_orig",
                    "effectiveLength",
                    "effectiveLength_orig",
                    "granges",
                    "granges_orig",
-                   "intensities",
-                   "intensities_orig",
                    "AffyRMA",
                    "AffyRMA_orig"
     ),
 
-    allowedLevels = c("gene", "isoform", "exon", "affy"),
+    allowedLevels = c("gene", "exon", "isoform", "protein", "affy"),
 
     primaryAssayNames = c(gene    = "counts",
-                          isoform = "intensities",
                           exon    = "counts",
+                          isoform = "intensities",
+                          protein = "intensities",
                           affy    = "AffyRMA")
 )
 

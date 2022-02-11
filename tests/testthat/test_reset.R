@@ -19,7 +19,7 @@ test_that('reset.R: ', {
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = "RNA-Seq"))
     names(test_t_obj) <- c("counts_orig", "counts", "design_orig", "design", "peptideAnnotation_orig")
     expect_error(resetDGEobj(test_t_obj),
-                 regexp = "Gene/isoform/exon/protein data not found",
+                 regexp = "Gene/exon/isoform/protein data not found",
                  fixed  = TRUE)
 
     # testing t_obj with bad platformType

@@ -1,13 +1,13 @@
 #' Initialize with base data (primaryAssayData, row annotations, col annotations)
 #'
-#' @param primaryAssayData               A numeric matrix or dataframe with row and
+#' @param primaryAssayData     A numeric matrix or dataframe with row and
 #'   colnames. Each column represents a sample.  Each row represents and assay.
 #'   This is typically the counts matrix in a DGE RNA-Seq experiment.
-#' @param rowData              Gene, isoform or exon level annotation. Rownames
+#' @param rowData              Gene, exon, isoform or protein level annotation. Rownames
 #'   must match the rownames in primaryAssayData
 #' @param colData              A dataframe describing the experiment design.
 #'   Rownames much match the colnames(primaryAssayData)
-#' @param level                One of "gene", "isoform", or "exon"
+#' @param level                One of "gene", "exon", "isoform" or "protein"
 #' @param customAttr           (optional) Named list of attributes
 #' @param allowShortSampleIDs  Using sequential integer rownames (even if typed
 #'   as character) is discouraged and by default will abort the DGEobj creation.
@@ -34,7 +34,6 @@
 #'                                             GeneModel = "Ensembl.R89"))
 #'
 #' @import magrittr
-#' @importFrom GenomicRanges GRanges
 #' @importFrom assertthat assert_that
 #'
 #' @export
@@ -185,24 +184,35 @@ initDGEobj <- function(primaryAssayData,
     dgeObj %<>% setAttributes(list(level = level))
 
     if (level %in% c("exon", "gene")) {
-        result <- try({gr <- GenomicRanges::GRanges(rowData)}, silent = TRUE)
+        gr_success <- FALSE
 
-        if (class(result) == "try-error") {
-            warning("Couldn't build a GRanges object!")
-        } else {
-            dgeObj <- addItem(dgeObj,
-                              item = gr,
-                              itemName = "granges_orig",
-                              itemType = "granges_orig",
-                              funArgs = funArgs,
-                              parent = paste(grparent, "_orig", sep = ""))
+        if (requireNamespace("GenomicRanges", quietly = TRUE)) {
 
-            dgeObj <- addItem(dgeObj,
-                              item = gr,
-                              itemName = "granges",
-                              itemType = "granges",
-                              funArgs = funArgs,
-                              parent = grparent)
+            do.call("require", list("GenomicRanges"))
+            result <- try({
+                gr <- do.call("GRanges", list(rowData))
+            }, silent = TRUE)
+
+            if (class(result) != "try-error") {
+                dgeObj <- addItem(dgeObj,
+                                  item = gr,
+                                  itemName = "granges_orig",
+                                  itemType = "granges_orig",
+                                  funArgs = funArgs,
+                                  parent = paste(grparent, "_orig", sep = ""))
+
+                dgeObj <- addItem(dgeObj,
+                                  item = gr,
+                                  itemName = "granges",
+                                  itemType = "granges",
+                                  funArgs = funArgs,
+                                  parent = grparent)
+                gr_success <- TRUE
+            }
+        }
+
+        if (!gr_success) {
+            warning("Unable to build a GRanges object for the gene/exon data.")
         }
     }
 
