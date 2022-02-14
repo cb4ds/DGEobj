@@ -26,14 +26,16 @@ resetDGEobj <- function(dgeObj){
                             msg = "The DGEobj must be of class 'DGEobj'.")
     assertthat::assert_that(!is.null(attr(dgeObj, "level")),
                             msg = "The DGEobj must have a 'level' attribute specified.")
-    assertthat::assert_that(!is.null(attr(dgeObj, "PlatformType")),
-                            msg = "Required attribute \"PlatformType\" is missing.")
+
+    #TODO:: check that we have a design and primary assay data on the object, protect the following.
 
     level     <- attr(dgeObj, "level")
-    def       <- attr(dgeObj, "objDef")
-    design    <- getItem(dgeObj, "design_orig")
-    paData    <- getItem(dgeObj, paste(def$primaryAssayNames[[level]], "_orig", sep = ""))
     levelData <- getItem(dgeObj, paste(level, "Data_orig", sep = ""))
+
+    design    <- getItem(dgeObj, "design_orig")
+    def       <- attr(dgeObj, "objDef")
+
+    paData    <- getItem(dgeObj, paste(def$primaryAssayNames[[level]], "_orig", sep = ""))
 
     newObj  <- initDGEobj(primaryAssayData = paData,
                           rowData          = levelData,
