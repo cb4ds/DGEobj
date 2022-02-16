@@ -7,9 +7,7 @@ test_that('reset.R: ', {
     new <- resetDGEobj(t_obj)
 
     # compare objects and classes
-    expect_silent(expect_s3_class(new, "DGEobj"))
-
-    expect_false(inherits(new, "t_obj"))
+    expect_s3_class(new, "DGEobj")
 
     # testing for structural changes after reset
     test_setequal <- function(new, t_obj) {
@@ -18,6 +16,10 @@ test_that('reset.R: ', {
         return(absent_values)
     }
     test_setequal(new, t_obj)
+
+    # more useful than the above
+    expect_mapequal(new, t_obj)
+
 
     expect_setequal(names(new), c("counts_orig", "counts", "design_orig", "design",
                                   "geneData_orig", "geneData", "granges_orig", "granges"))
