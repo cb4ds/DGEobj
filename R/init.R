@@ -83,8 +83,8 @@ initDGEobj <- function(primaryAssayData,
 
     if (!allowShortSampleIDs == TRUE) {
         suppressWarnings({
-            test <- as.numeric(rownames(colData))}
-        )
+            test <- as.numeric(rownames(colData))
+        })
 
         if (all(is.na(test)) == FALSE) {
             sampleCount <- nrow(colData)
@@ -183,7 +183,7 @@ initDGEobj <- function(primaryAssayData,
     dgeObj %<>% setAttributes(list(level = level))
 
     if (level %in% c("exon", "gene")) {
-        gr_success <- FALSE
+        genomic_ranges_success <- FALSE
 
         if (requireNamespace("GenomicRanges", quietly = TRUE)) {
 
@@ -206,11 +206,11 @@ initDGEobj <- function(primaryAssayData,
                                   itemType = "granges",
                                   funArgs  = funArgs,
                                   parent   = grparent)
-                gr_success <- TRUE
+                genomic_ranges_success <- TRUE
             }
         }
 
-        if (!gr_success) {
+        if (!genomic_ranges_success) {
             warning("Unable to build a GRanges object for the gene/exon data.")
         }
     }
