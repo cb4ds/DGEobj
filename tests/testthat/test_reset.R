@@ -3,11 +3,30 @@ context("reset.R functions")
 
 test_that('reset.R: ', {
     # testing valid t_obj
+
     new <- resetDGEobj(t_obj)
-    expect_s3_class(new, "DGEobj")
+
+    # compare objects and classes
+    expect_silent(expect_s3_class(new, "DGEobj"))
+
+    expect_false(inherits(new, "t_obj"))
+
+    # testing for structural changes after reset
+    test_setequal <- function(new, t_obj) {
+        absent_values <- expect_error(expect_setequal(new, t_obj),
+                                      regexp = NULL) # Error expected
+        return(absent_values)
+    }
+    test_setequal(new, t_obj)
+
     expect_setequal(names(new), c("counts_orig", "counts", "design_orig", "design",
                                   "geneData_orig", "geneData", "granges_orig", "granges"))
+
+
     expect_equal(dim(new), c(1000, 48))
+
+
+
 
     # testing t_obj without platformType
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
