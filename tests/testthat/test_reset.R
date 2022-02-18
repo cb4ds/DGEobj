@@ -46,6 +46,7 @@ test_that('reset.R: ', {
 
     expect_equal(dim(new), c(1000, 48))
 
+<<<<<<< HEAD
     expect_equal(dimnames(new), dimnames(t_obj)) # refine this with actual output
 
 
@@ -75,11 +76,13 @@ test_that('reset.R: ', {
                              fixed = TRUE)
 
     # testing t_obj without platformType
+=======
+    # testing t_obj without platformType (no longer required for reset)
+>>>>>>> origin/proteomics
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
-    expect_error(resetDGEobj(test_t_obj),
-                 regexp = "Required attribute \"PlatformType\" is missing.",
-                 fixed  = TRUE)
+    expect_s3_class(resetDGEobj(test_t_obj), "DGEobj")
 
+<<<<<<< HEAD
     # testing t_obj with unavailable data
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = "RNA-Seq"))
     names(test_t_obj) <- c("counts_orig", "counts", "design_orig", "design", "peptideAnnotation_orig")
@@ -102,4 +105,6 @@ test_that('reset.R: ', {
 
 
 
+=======
+>>>>>>> origin/proteomics
 })
