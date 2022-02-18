@@ -93,5 +93,13 @@ test_that('reset.R: ', {
                  regexp = "The PlatformType attribute value was not recognized!")
 
 
+    # testing t_obj before and after conversion
+    test_t_obj <- as.list(t_obj) # returns class() list
+    expect_error(resetDGEobj(test_t_obj),
+                 regexp = "The DGEobj must be of class 'DGEobj'.")
+
+
+
+
 
 })
