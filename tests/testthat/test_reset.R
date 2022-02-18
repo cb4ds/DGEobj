@@ -46,7 +46,6 @@ test_that('reset.R: ', {
 
     expect_equal(dim(new), c(1000, 48))
 
-<<<<<<< HEAD
     expect_equal(dimnames(new), dimnames(t_obj)) # refine this with actual output
 
 
@@ -98,9 +97,4 @@ test_that('reset.R: ', {
                  regexp = "The DGEobj must be of class 'DGEobj'.")
 
 
-
-
-
-=======
->>>>>>> origin/proteomics
 })
