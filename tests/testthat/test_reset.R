@@ -75,14 +75,10 @@ test_that('reset.R: ', {
                              regexp = "The DGEobj must be of class 'DGEobj'.",
                              fixed = TRUE)
 
-    # testing t_obj without platformType
-=======
     # testing t_obj without platformType (no longer required for reset)
->>>>>>> origin/proteomics
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
     expect_s3_class(resetDGEobj(test_t_obj), "DGEobj")
 
-<<<<<<< HEAD
     # testing t_obj with unavailable data
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = "RNA-Seq"))
     names(test_t_obj) <- c("counts_orig", "counts", "design_orig", "design", "peptideAnnotation_orig")
