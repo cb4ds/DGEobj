@@ -22,3 +22,8 @@ inst/doc
 /**/*.rds
 /**/*.RDS
 /**/*.Rds
+
+vignettes/*.html
+vignettes/*.R
+vignettes/*.log
+!vignettes/precompiled_vignettes.R

@@ -36,11 +36,14 @@ dge_creation_workflow <- function(counts, gene.data, design, qcdata, contrast_li
     # Annotations
     result <- annotateDGEobj(result, annotation_file)
 
+    # --- To save partial objects for use in the DGEobj.utils vignette
+    # saveRDS(result, glue("simple{ifelse(is.null(limit_genes), '', limit_genes)}.RDS"))
+
     # Protein Coding Filtering
     result <- result[result$geneData$gene_biotype == "protein_coding", ]
 
     # Normalize
-    result <- runEdgeRNorm(result, plotFile = FALSE)
+    result <- runEdgeRNorm(result, includePlot = FALSE)
 
     # Define Model
     formula          <- '~ 0 + ReplicateGroup'
@@ -105,6 +108,14 @@ rownames(qcdata) <- qcdata$Metric
 qcdata <- qcdata %>%
     select(-Metric) %>%
     t() %>% as.data.frame()
+
+# Create a DiseaseStatus column by parsing ReplicateGroup
+design$DiseaseStatus <- rep("Sham", nrow(design))
+idx <- str_detect(design$ReplicateGroup, "BDL")
+design$DiseaseStatus[idx] <- "BDL"
+
+# Create an animal# column.  The animal number is encoded in the sample.name column
+design$AnimalNum <- str_match(design$Sample.name, "r[0-9]{1,3}")
 
 # get gene information from BioMart
 ens.ds      <- "rnorvegicus_gene_ensembl"
