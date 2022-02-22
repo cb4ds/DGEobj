@@ -2,6 +2,11 @@
 # Copyright(c) Aggregate Genius Inc.
 # ----------------------------------
 
+#TEST EXPRESSION LEVELS
+# gene level
+# isoform level
+
+
 ## TEST ATTRIBUTES - test attributes are reset back to original after changes
 # * **setAttribute/s**: Allows setting attributes (facilitates attribute templates)
 # * **getAttribute/s**: Return attributes

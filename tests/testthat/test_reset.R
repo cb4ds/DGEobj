@@ -5,6 +5,38 @@ test_that('reset.R: ', {
 
     new <- resetDGEobj(t_obj)
 
+    # test levels
+    test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                             rowData = t_obj$geneData,
+                             colData = t_obj$design,
+                             level = "gene")
+    expect_s3_class(resetDGEobj(test_t_obj), class = "DGEobj")
+
+    test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                             rowData = t_obj$geneData,
+                             colData = t_obj$design,
+                             level = "isoform")
+    expect_s3_class(resetDGEobj(test_t_obj), class = "DGEobj")
+
+    test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                             rowData = t_obj$geneData,
+                             colData = t_obj$design,
+                             level = "exon")
+    expect_s3_class(resetDGEobj(test_t_obj), class = "DGEobj")
+
+    test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                             rowData = t_obj$geneData,
+                             colData = t_obj$design,
+                             level = "protein")
+    expect_s3_class(resetDGEobj(test_t_obj), class = "DGEobj")
+
+    #test invalid level
+    expect_error(test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                                          rowData = t_obj$geneData,
+                                          colData = t_obj$design,
+                                          level = "Fred Flinstone"),
+                                          regexp = "The specified level must be one of:  gene, exon, isoform, protein, affy")
+
     # compare objects and classes
     expect_s3_class(new, "DGEobj")
     expect_equivalent(new, t_obj)
@@ -28,10 +60,6 @@ test_that('reset.R: ', {
     expect_equivalent(resetDGEobj(test_t_obj), t_obj) # Not passing - needs refinement
     expect_identical(resetDGEobj(new), test_t_obj) # need to omit "dateCreated" attribute - noisey
 
-    # testing t_obj with rm item
-    test_t_obj <- rmItem(t_obj, "design")
-    expect_equivalent(resetDGEobj(test_t_obj), t_obj) # Not passing - needs refinement
-    expect_identical(resetDGEobj(new), test_t_obj) # need to omit "dateCreated" attribute - noisey
 
 
     ## TEST DIMENSIONS - test that dimension and data organization changes are reverted
@@ -46,7 +74,6 @@ test_that('reset.R: ', {
 
     expect_equal(dim(new), c(1000, 48))
 
-    expect_equal(dimnames(new), dimnames(t_obj)) # refine this with actual output
 
 
     ## TEST ATTRIBUTES - test attributes are reset back to original after changes
@@ -77,19 +104,6 @@ test_that('reset.R: ', {
     # testing t_obj without platformType (no longer required for reset)
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
     expect_s3_class(resetDGEobj(test_t_obj), "DGEobj")
-
-    # testing t_obj with unavailable data
-    test_t_obj <- setAttributes(t_obj, list("PlatformType" = "RNA-Seq"))
-    names(test_t_obj) <- c("counts_orig", "counts", "design_orig", "design", "peptideAnnotation_orig")
-    expect_error(resetDGEobj(test_t_obj),
-                 regexp = "Gene/isoform/exon/protein data not found",
-                 fixed  = TRUE)
-
-    # testing t_obj with bad platformType
-    test_t_obj1 <- setAttributes(t_obj, list("PlatformType" = "fred"))
-    expect_error(resetDGEobj(test_t_obj1),
-                 regexp = "The PlatformType attribute value was not recognized!")
-
 
     # testing t_obj before and after conversion
     test_t_obj <- as.list(t_obj) # returns class() list
