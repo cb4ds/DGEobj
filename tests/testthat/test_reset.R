@@ -46,7 +46,7 @@ test_that('reset.R: ', {
         test_t_obj <- rmItem(test_t_obj, "design")
         expect_false("design" %in% names(test_t_obj))
         test_t_reset <- resetDGEobj(test_t_obj)
-        expect_false("design" %in% names(test_t_reset)) # check if persists
+        expect_true("design" %in% names(test_t_reset)) # check if persists
 
         # testing t_obj with add item
         test_t_obj <- addItem(test_t_obj,
@@ -107,7 +107,7 @@ test_that('reset.R: ', {
         test_t_obj <- rmItem(test_t_obj, "design")
         expect_false("design" %in% names(test_t_obj))
         test_t_reset <- resetDGEobj(test_t_obj)
-        expect_false("design" %in% names(test_t_reset)) # check if persists
+        expect_true("design" %in% names(test_t_reset)) # check if persists
 
         # testing t_obj with add item
         test_t_obj <- addItem(test_t_obj,
@@ -130,7 +130,7 @@ test_that('reset.R: ', {
     expect_success(test_isoform_obj(t_isoform_obj))
 
     # test exon level data
-    test_exon_obj <- function(exon_obj) {
+    test_exon_obj <- function(exon_data) {
 
         test_t_obj <- exon_data
         test_t_reset <- resetDGEobj(test_t_obj)
@@ -164,7 +164,7 @@ test_that('reset.R: ', {
         test_t_obj <- rmItem(test_t_obj, "design")
         expect_false("design" %in% names(test_t_obj))
         test_t_reset <- resetDGEobj(test_t_obj)
-        expect_false("design" %in% names(test_t_reset)) # check if persists
+        expect_true("design" %in% names(test_t_reset)) # check if persists
 
         # testing t_obj with add item
         test_t_obj <- addItem(test_t_obj,
@@ -183,29 +183,70 @@ test_that('reset.R: ', {
         class(test_t_obj) <- "DGEobj"
         expect_silent(resetDGEobj(test_t_obj))
     }
-
     expect_success(test_exon_obj(t_exon_obj))
 
-    # test affy level data
-    test_affy_obj <- function(exon_obj) {
+    # test protein level data
+    test_protein_obj <- function(protein_data) {
 
-        # test levels - will be replaced with actual data
-        test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
-                                 rowData = t_obj$geneData,
-                                 colData = t_obj$design,
-                                 level = "affy")
+        test_t_obj <- protein_data
+        test_t_reset <- resetDGEobj(test_t_obj)
 
+        # object validation
+        expect_s3_class(test_t_reset, "DGEobj")
+        expect_equivalent(showMeta(test_t_reset), showMeta(test_t_obj))
 
-        # check level is set to protein
+        # validate level is protein before and after reset
         test_t_meta <- showMeta(test_t_obj)
-        expect_equal("affy", test_t_meta$Value[3])
-        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
-                            "affyData_orig", "affyData", "granges_orig", "granges"))
+        expect_equal("protein", test_t_meta$Value[3])
+        expect_equal(attr(test_t_obj, "level"), "protein")
 
-        # check level is reset
-        resetDGEobj(test_t_obj)
+        test_t_meta_reset <- showMeta(test_t_reset)
+        expect_equal("protein", test_t_meta_reset$Value[3])
+        expect_equal(attr(test_t_reset, "level"), "protein")
 
-        # some test here
+        # reset after subsetting
+        expect_equal(dim(test_t_obj), c(951, 48))
+        test_t_obj <- test_t_obj[c(1:10), ]
+        test_t_reset <- resetDGEobj(test_t_obj)
+        expect_equal(dim(test_t_reset), c(951, 48)) #???
+
+        # check names after reset
+        expect_named(test_t_obj, c('intensities_orig', 'intensities', 'design_orig',
+                                   'design', 'proteinData_orig', 'proteinData'))
+        expect_named(test_t_reset, c('intensities_orig', 'intensities', 'design_orig',
+                                     'design', 'proteinData_orig', 'proteinData'))
+
+        # testing t_obj with rm item
+        test_t_obj <- rmItem(test_t_obj, "design")
+        expect_false("design" %in% names(test_t_obj))
+        test_t_reset <- resetDGEobj(test_t_obj)
+        expect_true("design" %in% names(test_t_reset)) # check if persists
+
+        # testing t_obj with add item
+        test_t_obj <- addItem(test_t_obj,
+                              item = 'Fred Flintstone',
+                              itemName = 'Cartoon',
+                              itemType = 'meta',
+                              itemAttr = list('MyAttribute' = 'testObject'))
+        expect_true("Cartoon" %in% names(test_t_obj))
+        test_t_reset <- resetDGEobj(test_t_obj)
+        expect_false("Cartoon" %in% names(test_t_reset)) # check if removed
+
+        # testing t_obj after class change
+        test_t_obj <- as.list.DGEobj(test_t_obj)
+        expect_equal(class(test_t_obj), "list")
+        # coerce back into DGEobj, expect reset to work
+        class(test_t_obj) <- "DGEobj"
+        expect_silent(resetDGEobj(test_t_obj))
+    }
+    expect_success(test_protein_obj(t_protein_obj))
+
+
+
+    # test affy level data
+    test_affy_obj <- function(affy_obj) {
+
+        # placeholder
     }
 
     #test invalid level
