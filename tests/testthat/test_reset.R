@@ -5,7 +5,7 @@ test_that('reset.R: ', {
 
     new <- resetDGEobj(t_obj)
 
-    gene_obj <- "placeholder_value"
+    gene_obj <-  readRDS(system.file("exampleObj.RDS", package = "DGEobj", mustWork = TRUE))
     isoform_obj <- "placeholder_value"
     protein_obj <- "placeholder_value"
     exon_obj <- "placeholder_value"
@@ -19,21 +19,39 @@ test_that('reset.R: ', {
                                  colData = t_obj$design,
                                  level = "gene")
 
-        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
-                            "geneData_orig", "geneData", "granges_orig", "granges")) #specifically for gene one - do one for each level
 
-        # check level is set to gene
-        test_t_meta <- showMeta(test_t_obj)
-        expect_equal("gene", test_t_meta$Value[3])
+        # object validation
+        expect_s3_class(test_t_obj, "DGEobj")
 
-        # check that gene ItemNames generated and backed up
-        expect_true(c("geneData_orig", "geneData") %in% names(test_t_obj)) #returns TRUE TRUE vector- do one by one?
+
+        # validate level is gene
+        level_check <- function(test_t_obj) {
+            test_t_meta <- showMeta(test_t_obj)
+            expect_equal("gene", test_t_meta$Value[3])
+            expect_equal(attr(test_t_obj, "level"), "gene") # temp
+            expect_named(test_t_obj, c("counts_orig", "counts", "design_orig", "design",
+                                       "geneData_orig", "geneData", "granges_orig", "granges")) }
+
+        level_check(test_t_obj)
+
+        # changes
+        #add rm attribute- should persist
+        #subset
+        #etc
+
+        # change level
+        expect_failure(level_check(test_t_obj))
 
         # check level is reset
-        resetDGEobj(test_t_obj)
-        # some test here
+        expect_silent(resetDGEobj(test_t_obj))
+
+        # test levels back to normal
+        expect_success(level_check(test_t_obj))
 
     }
+
+    #run
+    expect_success(test_gene_obj(gene_obj))
 
     # test isoform level data
     test_isoform_obj <- function(isoform_obj) {
@@ -43,15 +61,11 @@ test_that('reset.R: ', {
                                  colData = t_obj$design,
                                  level = "isoform")
 
-        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
-                            "geneData_orig", "geneData", "granges_orig", "granges")) #specifically for gene one - do one for each level
-
         # check level is set to isoform
         test_t_meta <- showMeta(test_t_obj)
         expect_equal("isoform", test_t_meta$Value[3])
-
-        # check that gene ItemNames generated and backed up
-        expect_true(c("isoformData_orig", "isoformData") %in% names(test_t_obj)) #returns TRUE TRUE vector- do one by one?
+        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
+                            "isoformData_orig", "isoformData", "granges_orig", "granges")) #specifically for gene one - do one for each level
 
         # check level is reset
         resetDGEobj(test_t_obj)
@@ -68,18 +82,14 @@ test_that('reset.R: ', {
                                  colData = t_obj$design,
                                  level = "protein")
 
-        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
-                            "proteinData_orig", "proteinData", "granges_orig", "granges")) #specifically for gene one - do one for each level
-
         # check level is set to protein
         test_t_meta <- showMeta(test_t_obj)
         expect_equal("protein", test_t_meta$Value[3])
-
-        # check that gene ItemNames generated and backed up
-        expect_true(c("proteinData_orig", "proteinData") %in% names(test_t_obj)) #returns TRUE TRUE vector- do one by one?
+        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
+                            "proteinData_orig", "proteinData", "granges_orig", "granges")) #specifically for gene one - do one for each level
 
         # check level is reset
-        resetDGEobj(test_t_obj)
+        expect_silent(resetDGEobj(test_t_obj))
 
         # some test here
     }
@@ -93,15 +103,34 @@ test_that('reset.R: ', {
                                  colData = t_obj$design,
                                  level = "exon")
 
-        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
-                            "exonData_orig", "exonData", "granges_orig", "granges")) #specifically for gene one - do one for each level
 
         # check level is set to protein
         test_t_meta <- showMeta(test_t_obj)
         expect_equal("exon", test_t_meta$Value[3])
+        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
+                            "exonData_orig", "exonData", "granges_orig", "granges"))
 
-        # check that gene ItemNames generated and backed up
-        expect_true(c("proteinData_orig", "proteinData") %in% names(test_t_obj)) #returns TRUE TRUE vector- do one by one?
+        # check level is reset
+        expect_silent(resetDGEobj(test_t_obj))
+
+        # some test here
+    }
+
+    # test affy level data
+    test_affy_obj <- function(exon_obj) {
+
+        # test levels - will be replaced with actual data
+        test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
+                                 rowData = t_obj$geneData,
+                                 colData = t_obj$design,
+                                 level = "affy")
+
+
+        # check level is set to protein
+        test_t_meta <- showMeta(test_t_obj)
+        expect_equal("affy", test_t_meta$Value[3])
+        expect_named(new, c("counts_orig", "counts", "design_orig", "design",
+                            "affyData_orig", "affyData", "granges_orig", "granges"))
 
         # check level is reset
         resetDGEobj(test_t_obj)
@@ -135,9 +164,10 @@ test_that('reset.R: ', {
 
     # testing t_obj with attributes set to NULL
     test_t_obj  <- t_obj
-    test_t_obj <- lapply(test_t_obj,
-                           function(x) {
-                               attributes(x) <- NULL; x })
+    getAttributes(test_t_obj)
+    test_t_obj <- setAttributes(test_t_obj, NULL) #for loop through list to set to NULL
+    resetDGEobj(test_t_obj)
+    getAttributes(test_t_obj)
     # use for loop instead to preserve DGEobj class, make sure it's empty, can reset after - keep in mind level
     # check empty
     expect_error(resetDGEobj(test_t_obj),
