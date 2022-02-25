@@ -3,9 +3,10 @@ context("reset.R functions")
 
 test_that('reset.R: ', {
 
-    new <- resetDGEobj(t_obj)
+    test_t_obj  <- t_obj
+    test_t_reset <- resetDGEobj(t_obj)
 
-    # The following are defined in setup.R: t_obj, t_isoform_obj,t_exon_obj
+    # The following are defined in setup.R: t_obj, t_isoform_obj,t_exon_obj, t_protein_obj
 
     # test gene level data
     test_gene_obj <- function(gene_data) {
@@ -243,11 +244,12 @@ test_that('reset.R: ', {
 
 
 
-    # test affy level data
+    # test affy level data - INCOMPLETE
     test_affy_obj <- function(affy_obj) {
 
         # placeholder
     }
+
 
     #test invalid level
     expect_error(test_t_obj <- initDGEobj(primaryAssayData = t_obj$counts,
@@ -258,14 +260,17 @@ test_that('reset.R: ', {
 
     # testing t_obj with new attributes
     new_attributes <- list("attribute1" = runif(100, min = 0, max = 2), "attribute2" = LETTERS)
-    test_t_obj <- setAttributes(t_obj, new_attributes)
-    expect_equivalent(getAttributes(resetDGEobj(test_t_obj)), getAttributes(test_t_obj)) # should be equivalent
+    test_t_obj <- setAttributes(test_t_obj, new_attributes)
+    test_t_reset <- resetDGEobj(test_t_obj)
+    expect_error(expect_mapequal(getAttributes(test_t_reset), getAttributes(test_t_obj))) # find a better way to do this without nesting expect functions
 
-    # testing t_obj with attributes set to NULL
-    test_t_obj  <- t_obj
+    # testing t_obj with attributes set to NULL - INCOMPLETE, does not run
     getAttributes(test_t_obj)
-    test_t_obj <- setAttributes(test_t_obj, NULL) #for loop through list to set to NULL
-    resetDGEobj(test_t_obj)
+    test_t_obj <- for (i in length(attributes(test_t_obj))) {
+        setAttributes(test_t_obj[i], NULL)
+    }
+
+    test_t_reset <- resetDGEobj(test_t_obj)
     getAttributes(test_t_obj)
     # use for loop instead to preserve DGEobj class, make sure it's empty, can reset after - keep in mind level
     # check empty
