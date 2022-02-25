@@ -35,10 +35,10 @@ test_that('reset.R: gene level data', {
                                  "geneData_orig", "geneData", "granges_orig", "granges"))
 
     # testing t_obj with rm item
-    test_t_obj <- rmItem(test_t_obj, "design")
-    expect_false("design" %in% names(test_t_obj))
+    test_t_obj <- rmItem(test_t_obj, "BDL_vs_Sham")
+    expect_false("BDL_vs_Sham" %in% names(test_t_obj))
     test_t_reset <- resetDGEobj(test_t_obj)
-    expect_true("design" %in% names(test_t_reset)) # check if persists
+    expect_false("BDL_vs_Sham" %in% names(test_t_reset)) # should not be restored
 
     # testing t_obj with add item
     test_t_obj <- addItem(test_t_obj,
@@ -97,10 +97,10 @@ test_that('reset.R: isoform level data', {
                                    "design", "isoformData_orig", "isoformData"))
 
     # testing test_t_obj with rm item
-    test_t_obj <- rmItem(test_t_obj, "design")
-    expect_false("design" %in% names(test_t_obj))
+    test_t_obj <- rmItem(test_t_obj, "isoformData")
+    expect_false("isoformData" %in% names(test_t_obj))
     test_t_reset <- resetDGEobj(test_t_obj)
-    expect_true("design" %in% names(test_t_reset)) # check if persists
+    expect_true("isoformData" %in% names(test_t_reset)) # check if restored
 
     # testing test_t_obj with add item
     test_t_obj <- addItem(test_t_obj,
@@ -158,10 +158,10 @@ test_that('reset.R: exon level data', {
                                  "exonData_orig", "exonData", "granges_orig", "granges"))
 
     # testing test_t_obj with rm item
-    test_t_obj <- rmItem(test_t_obj, "design")
-    expect_false("design" %in% names(test_t_obj))
+    test_t_obj <- rmItem(test_t_obj, "granges")
+    expect_false("granges" %in% names(test_t_obj))
     test_t_reset <- resetDGEobj(test_t_obj)
-    expect_true("design" %in% names(test_t_reset)) # check if persists
+    expect_true("granges" %in% names(test_t_reset)) # check if persists
 
     # testing test_t_obj with add item
     test_t_obj <- addItem(test_t_obj,
@@ -219,10 +219,10 @@ test_that('reset.R: protein level data', {
                                  'design', 'proteinData_orig', 'proteinData'))
 
     # testing test_t_obj with rm item
-    test_t_obj <- rmItem(test_t_obj, "design")
-    expect_false("design" %in% names(test_t_obj))
+    test_t_obj <- rmItem(test_t_obj, "intensities")
+    expect_false("intensities" %in% names(test_t_obj))
     test_t_reset <- resetDGEobj(test_t_obj)
-    expect_true("design" %in% names(test_t_reset)) # check if persists
+    expect_true("intensities" %in% names(test_t_reset)) # check if persists
 
     # testing test_t_obj with add item
     test_t_obj <- addItem(test_t_obj,
@@ -275,5 +275,12 @@ test_that('reset.R: misc', {
     # testing t_obj without platformType (no longer required for reset)
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
     expect_s3_class(resetDGEobj(test_t_obj), "DGEobj")
+
+    # testing rm item with _orig
+    test_t_obj <- rmItem(test_t_obj, "counts_orig")
+    expect_false("counts_orig" %in% names(test_t_obj))
+    expect_error(resetDGEobj(test_t_obj),
+                 regexp = 'The requested itemName should be in the DGEobj. Use names(dgeObj) to see the available items.',
+                 fixed = TRUE)
 
 })
