@@ -34,6 +34,7 @@ The funArgs text field intended to hold details from creating the object.  Passi
 * **rmItem/s**:  Remove a data item from a DGEobj  
 * **newType**:  Define a new data type  
 * **setAttribute/s**: Allows setting attributes (facilitates attribute templates)
+* **resetDGEobj**: Produces a new DGEobj with the original unfiltered data
 
 #### Query Functions  
 
@@ -59,4 +60,4 @@ If the gene data object (row annotation) contains chromosome position informatio
 
 #### Original Data 
 
-During initialization, a copy of the counts, gene annotation and sample annotation is duplicated and stored in the meta slot with an "_orig" suffix on the itemName.  This preserves the original data if you subset the original data. 
+During initialization, a copy of the counts, gene annotation and sample annotation is duplicated and stored in the meta slot with an "_orig" suffix on the itemName.  This preserves the original data if you subset the original data. To restore select attributes including primary parts of the originally initialized DGEobj, you can reset the object.
