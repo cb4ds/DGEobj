@@ -23,7 +23,7 @@ test_that('reset.R: gene level data', {
     expect_equal(dim(test_t_obj), t_dim)
     test_t_obj <- test_t_obj[c(1:10), ]
     test_t_reset <- resetDGEobj(test_t_obj)
-    expect_equal(dim(test_t_reset), t_dim)
+    expect_equal(dim(test_t_reset), c(1000, 48))
 
     # check names after reset
     expect_named(test_t_obj, c('counts_orig', 'counts', 'design_orig', 'design', 'geneData_orig',
@@ -91,13 +91,10 @@ test_that('reset.R: isoform level data', {
     expect_equal(dim(test_t_reset), test_t_dim)
 
     # check names after reset
-    expect_named(test_t_obj, c('counts_orig', 'counts', 'design_orig', 'design', 'isoformData_orig',
-                               'isoformData', 'granges_orig', 'granges', 'DGEList', 'ReplicateGroupDesign',
-                               'ReplicateGroupDesign_Elist', 'ReplicateGroupDesign_fit',
-                               'ReplicateGroupDesign_fit_cm', 'ReplicateGroupDesign_fit_cf',
-                               'BDL_vs_Sham', 'EXT1024_vs_BDL', 'Nint_vs_BDL', 'Sora_vs_BDL'))
-    expect_named(test_t_reset, c("counts_orig", "counts", "design_orig", "design",
-                                 "isoformData_orig", "isoformData", "granges_orig", "granges"))
+    expect_named(test_t_obj, c("intensities_orig", "intensities", "design_orig",
+                               "design", "isoformData_orig", "isoformData"))
+    expect_named(test_t_reset, c("intensities_orig", "intensities", "design_orig",
+                                   "design", "isoformData_orig", "isoformData"))
 
     # testing test_t_obj with rm item
     test_t_obj <- rmItem(test_t_obj, "design")
@@ -274,20 +271,6 @@ test_that('reset.R: misc', {
     test_t_reset_attr <- getAttributes(test_t_reset)
     expect_true(exists('attribute1', where = getAttributes(test_t_reset)))
     expect_setequal(test_t_reset_attr$attribute2, LETTERS)
-
-    # testing t_obj with attributes set to NULL - INCOMPLETE, does not run
-    getAttributes(test_t_obj)
-    test_t_obj <- for (i in length(attributes(test_t_obj))) {
-        setAttributes(test_t_obj[i], NULL)
-    }
-
-    test_t_reset <- resetDGEobj(test_t_obj)
-    getAttributes(test_t_obj)
-    # use for loop instead to preserve DGEobj class, make sure it's empty, can reset after - keep in mind level
-    # check empty
-    expect_error(resetDGEobj(test_t_obj),
-                 regexp = "primaryAssayData must be specified as a matrix or a data.frame.",
-                 fixed = TRUE)
 
     # testing t_obj without platformType (no longer required for reset)
     test_t_obj <- setAttributes(t_obj, list("PlatformType" = NULL))
