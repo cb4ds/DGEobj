@@ -479,21 +479,39 @@ dim(BDLonly)
 During a workflow, a DGEobj typically gets filtered down to remove samples that fail QC or non-expressed genes. The `resetDGEobj` function produces a new DGEobj with the original unfiltered data. Resetting can only be done on valid DGEobjs. 
 
 ```r 
-# view the DGEobj
-kable(dgeObj)
+# view the DGEobj dimensions
+dim(dgeObj)
+```
+
+```
+## [1] 32883    48
+
 ```
 
 ```r
 # subset the DGEobj 
 dgeObj_subset <- dgeObj[c(1:10), ]
-kable(dgeObj_subset)
+
+#view new dimensions for the object
+dim(dgeObj_subset)
+```
+
+```
+## [1] 10 48
 ```
 
 ```r
 # reset the DGEobj
 
 DGEobj_reset <- resetDGEobj(dgeObj)
-kable(DGEobj_reset)
+
+# view the restored dimensions
+dim(DGEobj_reset)
+```
+
+```
+## [1] 32883    48
+
 ```
 
 ## Inventory of a DGEobj
