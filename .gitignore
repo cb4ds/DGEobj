@@ -13,6 +13,7 @@ vignettes/*.html
 *.knit.md
 /.project
 inst/doc
+working-*
 
 /**/*.png
 /**/*.xlsx
