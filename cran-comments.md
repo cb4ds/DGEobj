@@ -13,13 +13,13 @@
 RStudio Server Pro (ubuntu 18.04.2)  
 
 * R 3.6.3
-* R 4.0.4
+* R 4.0.5
+* R 4.1.3
 
-Travis-CI (ubuntu 16.04.6)
+CircleCI
 
-* R 3.6.3
-* R 4.0.2
-* R devel (2021-04-08 r80148)
+* R 4.0.5
+* R 4.1.3
 
 WinBuilder
 
