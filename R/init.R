@@ -50,6 +50,7 @@ initDGEobj <- function(primaryAssayData,
                             !missing(colData),
                             !missing(rowData),
                             !missing(level),
+                            !is.null(level),
                             msg = "Specify the primaryAssayData, colData, rowData, and level. All are required to initialize a DGEobj.")
     assertthat::assert_that(is.matrix(primaryAssayData) | is.data.frame(primaryAssayData),
                             msg = "primaryAssayData must be specified as a matrix or a data.frame.")
