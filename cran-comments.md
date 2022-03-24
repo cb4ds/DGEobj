@@ -1,9 +1,10 @@
 ## Comments from Maintainer
 
-* significant documentation review/updates
-* underlying structure - added a few new fields and cleaned up unneeded methods
-* updated the example object with additional field information
-* precompiled the vignette to avoid hitting internet resources and performing intensive calculations with each CMD check
+* made GenomicRanges package optional - used only for exon/gene levels
+* added "protein" level data, reviewed/updated isoform data for proper handling
+* added imputationMatrix as a type of metadata
+* reworked reset to resolve issues and remove unneded code
+* updated tests and documentation
 
 ---  
 

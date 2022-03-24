@@ -50,6 +50,7 @@ initDGEobj <- function(primaryAssayData,
                             !missing(colData),
                             !missing(rowData),
                             !missing(level),
+                            !is.null(level),
                             msg = "Specify the primaryAssayData, colData, rowData, and level. All are required to initialize a DGEobj.")
     assertthat::assert_that(is.matrix(primaryAssayData) | is.data.frame(primaryAssayData),
                             msg = "primaryAssayData must be specified as a matrix or a data.frame.")
@@ -102,7 +103,7 @@ initDGEobj <- function(primaryAssayData,
 
     result <- try({primaryAssayData <- as.matrix(primaryAssayData)}, silent = TRUE)
 
-    if (any(class(result) == "try-error"))
+    if ("try-error" %in% class(result))
         stop("Couldn't coerce primaryAssayData to a numeric matrix!")
 
     # Initialize an empty DGEobj
@@ -192,7 +193,7 @@ initDGEobj <- function(primaryAssayData,
                 gr <- do.call("GRanges", list(rowData))
             }, silent = TRUE)
 
-            if (class(result) != "try-error") {
+            if (!("try-error" %in% class(result))) {
                 dgeObj <- addItem(dgeObj,
                                   item     = gr,
                                   itemName = "granges_orig",
