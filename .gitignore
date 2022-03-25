@@ -14,6 +14,7 @@ vignettes/*.html
 /.project
 inst/doc
 working-*
+revdep
 
 /**/*.png
 /**/*.xlsx
