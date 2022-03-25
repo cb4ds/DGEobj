@@ -11,3 +11,4 @@
 ^\.circleci/config\.yml$
 ^working-.*$
 ^revdep$
+^CRAN-SUBMISSION$
