@@ -44,11 +44,12 @@ dimnames.DGEobj <- function(x){
 #' @return NULL
 #'
 #' @examples
+#' \dontrun{
 #'     # example DGEobj
 #'     exObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
 #'
 #'     print(exObj)
-#'
+#'}
 #' @export
 print.DGEobj <- function(x, ..., verbose = FALSE) {
     df <- inventory(x, verbose = verbose)
@@ -65,11 +66,12 @@ print.DGEobj <- function(x, ..., verbose = FALSE) {
 #' @return A data.frame summarizing the data contained in the DGEobj
 #'
 #' @examples
+#' \dontrun{
 #'     # example DGEobj
 #'     exObj <- readRDS(system.file("exampleObj.RDS", package = "DGEobj"))
 #'
 #'     inventory(exObj)
-#'
+#' }
 #' @export
 inventory <- function(dgeObj, verbose = FALSE)  {
     ItemNames <- names(dgeObj)
