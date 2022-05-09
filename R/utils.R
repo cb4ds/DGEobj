@@ -50,6 +50,7 @@ dimnames.DGEobj <- function(x){
 #'
 #'     print(exObj)
 #'}
+#'
 #' @export
 print.DGEobj <- function(x, ..., verbose = FALSE) {
     df <- inventory(x, verbose = verbose)
@@ -72,6 +73,7 @@ print.DGEobj <- function(x, ..., verbose = FALSE) {
 #'
 #'     inventory(exObj)
 #' }
+#'
 #' @export
 inventory <- function(dgeObj, verbose = FALSE)  {
     ItemNames <- names(dgeObj)

@@ -180,6 +180,7 @@ addItem <- function(dgeObj,
 #'    )
 #'    inventory(dgeObj)
 #' }
+#'
 #' @importFrom assertthat assert_that
 #'
 #' @export
