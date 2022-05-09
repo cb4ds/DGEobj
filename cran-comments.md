@@ -1,10 +1,7 @@
 ## Comments from Maintainer
 
-* made GenomicRanges package optional - used only for exon/gene levels
-* added "protein" level data, reviewed/updated isoform data for proper handling
-* added imputationMatrix as a type of metadata
-* reworked reset to resolve issues and remove unneeded code
-* updated tests and documentation
+* for examples that use suggested packages to create input/example data set them to don't run to avoid issues when those packages are not available
+* skip tests when the example objects cannot be built due to missing suggested packages crucial to testing
 
 ---  
 
@@ -20,6 +17,7 @@ CircleCI
 
 * R 4.0.5
 * R 4.1.3
+* rocker/verse:latest
 
 WinBuilder
 
@@ -28,7 +26,8 @@ WinBuilder
 
 RHub
 
-* devtools::check_rhub(interactive = F)
+* devtools::check_rhub(interactive = F,
+                       env_vars    = c("_R_CHECK_DEPENDS_ONLY_"   = "true"))
 
 ---  
 
