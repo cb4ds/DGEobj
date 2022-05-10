@@ -55,6 +55,7 @@ revdepcheck::cran_revdeps('DGEobj', bioc = T)
 
 ```
 revdepcheck::revdep_report_cran()
+
 ## revdepcheck results
 
 We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
