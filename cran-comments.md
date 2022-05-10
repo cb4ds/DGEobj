@@ -1,7 +1,8 @@
 ## Comments from Maintainer
 
-* for examples that use suggested packages to create input/example data set them to don't run to avoid issues when those packages are not available
-* skip tests when the example objects cannot be built due to missing suggested packages crucial to testing
+* Resolved CRAN check errors
+* Skipping examples dependent on suggested packages
+* Updated tests so that they do not fail if suggested packages are not available
 
 ---  
 
@@ -53,7 +54,7 @@ revdepcheck::cran_revdeps('DGEobj', bioc = T)
 ```
 
 ```
-revdepcheck:: revdep_report_cran()
+revdepcheck::revdep_report_cran()
 ## revdepcheck results
 
 We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
