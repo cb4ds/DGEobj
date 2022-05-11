@@ -22,12 +22,13 @@
 #'    #using a text file file of key=value pairs
 #'    annotationFile <- "/location/to/myAnnotations.txt"
 #'    MyDgeObj <- annotateDGEobj(MyDgeObj, annotationFile)
-#'}
+#'
 #'    #using a named list of key/values
 #'    annotations <- list(Title     = "Rat Liver Slices from Bile Duct Ligation animals",
 #'                        Organism  = "Rat",
 #'                        GeneModel = "Ensembl.R89")
 #'    MyDgeObj <- annotateDGEobj(MyDgeObj, annotations)
+#' }
 #'
 #' @import magrittr
 #' @importFrom stringr str_remove_all str_locate
