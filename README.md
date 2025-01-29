@@ -1,7 +1,7 @@
 # DGEobj: An S3 data object to capture results from Differential Gene Expression analysis
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj) 
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj) 
 [![CRAN_Downloads_Badge](https://cranlogs.r-pkg.org/badges/grand-total/DGEobj?color=9bc2cf)](https://cran.r-project.org/package=DGEobj)
 [![CircleCI](https://circleci.com/gh/cb4ds/DGEobj/tree/master.svg?style=svg)](https://app.circleci.com/pipelines/github/cb4ds/DGEobj?branch=master)
 [![Codecov test coverage](https://codecov.io/gh/cb4ds/DGEobj/branch/master/graph/badge.svg)](https://app.codecov.io/gh/cb4ds/DGEobj?branch=master)
